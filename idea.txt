@@ -1,0 +1,78 @@
+I'm looking to build a family-tree editor/visualizer in from a browser. Basic idea here is to have the list of people, their relationships, their attributes, how they are related to a "principal person" that is selected from a drop down.
+
+The list of people should be a json file that is read and loaded when the page is opened. Take inspiration from the tools and resources mentioned below for the json structure.
+
+I'm basically thinking a 2 json files. One of people and one of relationships. The people json file should have the list of people with their attributes. The relationships json file should have the list of relationships with the people involved in the relationship. This is not a requirement. We can have a single json file for both.
+My reason for having a separate relationships json file is the dynamicity factor introduced from the "principal person" selection.
+
+Principal Person:
+The principal person is the person who is selected from the drop down. This person will become the root of the tree, by default. This person will also be the person who is selected when the page is opened.
+
+For instance, I have listed myself, my wife (id: wife), my brother (id: brother), his wife (id: brother_wife), my father (id: father), my mother (id: mother), my wifes' farther (id: wife_father), my wifes' mother (id: wife_mother), my brother's wife's father (id: brother_wife_father), my brother's wife's mother (id: brother_wife_mother), my brother and his wife's son (id: brother_wife_son).
+
+FYI: We have a lot of names in telugu for indicating relationships.
+
+Now the relationships will be as follows:
+Example 1:
+I'm the principal person.
+  - Myself is "Me".
+  - My wife (id: wife) is my wife.
+  - My brother (id: brother) is my brother.
+  - My father (id: father) is my father.
+  - My mother (id: mother) is my mother.
+  - My wife's father (id: wife_father) is my father-in-law (telugu: mamayya).
+  - My wifes' mother (id: wife_mother) is my mother-in-law (telugu: attaiah).
+  - My brother's wife's father (id: brother_wife_father) is my father-in-law (telugu: mamayya).
+  - My brother's wife's mother (id: brother_wife_mother) is my mother-in-law (telugu: attaiah).
+  - My brother and his wife's son (id: brother_wife_son) is my nephew (telugu: koduku/menalludu).
+  - My brother and his wife's daughter (id: brother_wife_daughter) is my niece (telugu: menakodalu).
+
+Example 2:
+My wife is the principal person.
+  - My wife is "Me".
+  - I am my wife's husband.
+  - My brother (id: brother) is her brother-in-law (telugu: bava).
+  - My father (id: father) is her father-in-law (telugu: mamayya).
+  - My mother (id: mother) is her mother-in-law (telugu: attaiah).
+  - My brother's wife's father (id: brother_wife_father) is her father (telugu: peddananna/babai - depends on how old her father is compared to brother_wife_father. If her father is older, then use peddananna, if younger, then use babai).
+  - My brother's wife's mother (id: brother_wife_mother) is her mother (telugu: peddamma/pinni - depends on how old her mother is compared to brother_wife_mother. If her mother is older, then use peddamma, if younger, then use pinni).
+  - My brother and his wife's son (id: brother_wife_son) is her son (telugu: koduku).
+  - My brother and his wife's daughter (id: brother_wife_daughter) is her niece (telugu: menakodalu).
+
+Example 3:
+My brother is the principal person.
+  - My brother is "Me".
+  - My wife (id: wife) is my brother's sister-in-law (telugu: maradhalu).
+  - My father (id: father) is my brother's father (telugu: father).
+  - My mother (id: mother) is my brother's mother (telugu: mother).
+  - My brother's wife (id: brother_wife) is my brother's wife (telugu: wife).
+  - My brother's wife's father (id: brother_wife_father) is my brother's father-in-law (telugu: mamayya).
+  - My brother's wife's mother (id: brother_wife_mother) is my brother's mother-in-law (telugu: attaiah).
+  - My brother and his wife's son (id: brother_wife_son) is my brother's son (telugu: koduku).
+  - My brother and his wife's daughter (id: brother_wife_daughter) is my brother's daughter (telugu: kuthuru).
+
+So this is how the relationship title of a the same person changes based on the principal person selected.
+
+I need to a way to progamatically identify a relationship title based on the principal person selected. Considering the examples above there is a good level of complexity based on multiple attributes. That is why I'm thinking of having a separate relationships json file. You be the judge here and let me know if you think we should have a single json file for both.
+
+Notes:
+1. I should be able to put this in github pages so I this can be accessed from any device with a browser.
+2. There should be 2 views, viewer and editor. opening the page should default to the viewer. There should be a button to switch to the editor.
+3. In the viewer,
+  - There should be a drop down to select the principal person. The idea of this selection is to show the relationships of the people listed against this principal person.
+  - Each block in the tree is for one person. It should show the name, picture, relation to the principal person.
+  - This principal person will become the root of the tree, by default.
+  - There should be a button to view the entire tree, with all the people listed with highlighting the principal person block. In this view, I should get a button to go back to the principal person root view.
+4. In the editor,
+  - There should be a button to add a new person.
+  - There should be a button to edit an existing person.
+  - There should be a button to delete an existing person.
+  - There should be a button to cancel the changes.
+  - There should be a button to go back to the viewer.
+
+Tools:
+D3: https://github.com/d3/d3
+D3-Family-Tree: https://github.com/d3/d3-family-tree
+
+Resources:
+I came across this project: https://github.com/donatso/family-chart which seems to be a good starting point. I like the dynamics in the viewer.

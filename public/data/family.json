@@ -1,0 +1,807 @@
+[
+  {
+    "id": "kamal",
+    "data": {
+      "first name": "Kamal Teja",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1993-03-29",
+      "avatar": "kamal.png"
+    },
+    "rels": {
+      "spouses": [
+        "tanvi"
+      ],
+      "parents": [
+        "ramanaiah",
+        "sreedevi"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "tanvi",
+    "data": {
+      "first name": "Mahalakshmi Tanvi",
+      "last name": "Kandati",
+      "gender": "F",
+      "birthday": "1996-08-16",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "kamal"
+      ],
+      "parents": [
+        "venkatesh",
+        "satyaveni"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "akhil",
+    "data": {
+      "first name": "Akhil Teja",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1992-01-20",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "snehala"
+      ],
+      "parents": [
+        "ramanaiah",
+        "sreedevi"
+      ],
+      "children": [
+        "sahil"
+      ]
+    }
+  },
+  {
+    "id": "snehala",
+    "data": {
+      "first name": "Snehala",
+      "last name": "Batchala",
+      "gender": "F",
+      "birthday": "1988-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "akhil"
+      ],
+      "parents": [
+        "prasad",
+        "vani"
+      ],
+      "children": [
+        "sahil"
+      ]
+    }
+  },
+  {
+    "id": "murali",
+    "data": {
+      "first name": "Murali",
+      "last name": "Batchala",
+      "gender": "M",
+      "birthday": "1988-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "oohala"
+      ],
+      "parents": [],
+      "children": []
+    }
+  },
+  {
+    "id": "oohala",
+    "data": {
+      "first name": "Oohala",
+      "last name": "Batchala",
+      "gender": "F",
+      "birthday": "1988-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "murali"
+      ],
+      "parents": [
+        "prasad",
+        "vani"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "ramanaiah",
+    "data": {
+      "first name": "Ramanaiah",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1960-12-25",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "sreedevi"
+      ],
+      "parents": [
+        "venkata_subbaiah",
+        "kamakshamma"
+      ],
+      "children": [
+        "akhil",
+        "kamal"
+      ]
+    }
+  },
+  {
+    "id": "sreedevi",
+    "data": {
+      "first name": "Sreedevi",
+      "last name": "Gurramkonda",
+      "gender": "F",
+      "birthday": "1966-06-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "ramanaiah"
+      ],
+      "parents": [
+        "narasamma_rd84",
+        "mom_thatayya_7bcn"
+      ],
+      "children": [
+        "akhil",
+        "kamal"
+      ]
+    }
+  },
+  {
+    "id": "venkatesh",
+    "data": {
+      "first name": "Venkatesh",
+      "last name": "Kandati",
+      "gender": "M",
+      "birthday": "1959-10-16",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "satyaveni"
+      ],
+      "parents": [
+        "chanchayya_15bf",
+        "adi_lakshmi_23zi"
+      ],
+      "children": [
+        "tanvi",
+        "neehar_55dz"
+      ]
+    }
+  },
+  {
+    "id": "satyaveni",
+    "data": {
+      "first name": "Satyaveni",
+      "last name": "Kandati",
+      "gender": "F",
+      "birthday": "1965-05-04",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "venkatesh"
+      ],
+      "parents": [
+        "dhalinaidu_00yp",
+        "rama_lakshmi_0hno"
+      ],
+      "children": [
+        "tanvi",
+        "neehar_55dz"
+      ]
+    }
+  },
+  {
+    "id": "prasad",
+    "data": {
+      "first name": "Prasad",
+      "last name": "Batchala",
+      "gender": "M",
+      "birthday": "1957-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "vani"
+      ],
+      "parents": [],
+      "children": [
+        "snehala",
+        "oohala"
+      ]
+    }
+  },
+  {
+    "id": "vani",
+    "data": {
+      "first name": "Vani",
+      "last name": "Batchala",
+      "gender": "F",
+      "birthday": "1960-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "prasad"
+      ],
+      "parents": [],
+      "children": [
+        "snehala",
+        "oohala"
+      ]
+    }
+  },
+  {
+    "id": "sahil",
+    "data": {
+      "first name": "Ghana Sahil",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "2015-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "akhil",
+        "snehala"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "venkata_subbaiah",
+    "data": {
+      "first name": "Venkata Subbaiah",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1930-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "kamakshamma"
+      ],
+      "parents": [],
+      "children": [
+        "ramanaiah",
+        "chandra_h1md"
+      ]
+    }
+  },
+  {
+    "id": "kamakshamma",
+    "data": {
+      "first name": "Kamakshamma",
+      "last name": "Gurramkonda",
+      "gender": "F",
+      "birthday": "1930-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "venkata_subbaiah"
+      ],
+      "parents": [],
+      "children": [
+        "ramanaiah",
+        "chandra_h1md"
+      ]
+    }
+  },
+  {
+    "id": "narasamma_rd84",
+    "data": {
+      "first name": "Narasamma",
+      "last name": "Akumalla",
+      "gender": "F",
+      "birthday": "1930-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "mom_thatayya_7bcn"
+      ],
+      "parents": [],
+      "children": [
+        "sreedevi",
+        "sarada_ggvs",
+        "prasad_h1xu"
+      ]
+    }
+  },
+  {
+    "id": "mom_thatayya_7bcn",
+    "data": {
+      "first name": "Mom thatayya",
+      "last name": "asd",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "narasamma_rd84"
+      ],
+      "parents": [],
+      "children": [
+        "sreedevi",
+        "sarada_ggvs",
+        "prasad_h1xu"
+      ]
+    }
+  },
+  {
+    "id": "sarada_ggvs",
+    "data": {
+      "first name": "Sarada",
+      "last name": "",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "subbanarasaiah_765i"
+      ],
+      "parents": [
+        "narasamma_rd84",
+        "mom_thatayya_7bcn"
+      ],
+      "children": [
+        "naveena_7l9r",
+        "praveena_dhfk"
+      ]
+    }
+  },
+  {
+    "id": "prasad_h1xu",
+    "data": {
+      "first name": "Prasad",
+      "last name": "Akumalla",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "padma_hs2b"
+      ],
+      "parents": [
+        "narasamma_rd84",
+        "mom_thatayya_7bcn"
+      ],
+      "children": [
+        "harsha_hcl8",
+        "vishnu_i242"
+      ]
+    }
+  },
+  {
+    "id": "harsha_hcl8",
+    "data": {
+      "first name": "Harsha",
+      "last name": "Akumalla",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "prasad_h1xu",
+        "padma_hs2b"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "padma_hs2b",
+    "data": {
+      "first name": "Padma",
+      "last name": "Akumalla",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "prasad_h1xu"
+      ],
+      "parents": [],
+      "children": [
+        "harsha_hcl8",
+        "vishnu_i242"
+      ]
+    }
+  },
+  {
+    "id": "vishnu_i242",
+    "data": {
+      "first name": "Vishnu",
+      "last name": "Akumalla",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "prasad_h1xu",
+        "padma_hs2b"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "neehar_55dz",
+    "data": {
+      "first name": "Neehar",
+      "last name": "Kandati",
+      "gender": "M",
+      "birthday": "1994-12-31",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "venkatesh",
+        "satyaveni"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "subbanarasaiah_765i",
+    "data": {
+      "first name": "Subbanarasaiah",
+      "last name": "Akumalla",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "sarada_ggvs"
+      ],
+      "parents": [],
+      "children": [
+        "naveena_7l9r",
+        "praveena_dhfk"
+      ]
+    }
+  },
+  {
+    "id": "naveena_7l9r",
+    "data": {
+      "first name": "Naveena",
+      "last name": "Basetty",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "venkat_du6w"
+      ],
+      "parents": [
+        "sarada_ggvs",
+        "subbanarasaiah_765i"
+      ],
+      "children": [
+        "sathvik_fxoc"
+      ]
+    }
+  },
+  {
+    "id": "praveena_dhfk",
+    "data": {
+      "first name": "Praveena",
+      "last name": "Jyothinagaram",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "srikanth_e5wn"
+      ],
+      "parents": [
+        "sarada_ggvs",
+        "subbanarasaiah_765i"
+      ],
+      "children": [
+        "maanya_ezc5",
+        "manav_elq6"
+      ]
+    }
+  },
+  {
+    "id": "venkat_du6w",
+    "data": {
+      "first name": "Venkat",
+      "last name": "Basetty",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "naveena_7l9r"
+      ],
+      "parents": [],
+      "children": [
+        "sathvik_fxoc"
+      ]
+    }
+  },
+  {
+    "id": "srikanth_e5wn",
+    "data": {
+      "first name": "Srikanth",
+      "last name": "Jyothinagaram",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "praveena_dhfk"
+      ],
+      "parents": [],
+      "children": [
+        "maanya_ezc5",
+        "manav_elq6"
+      ]
+    }
+  },
+  {
+    "id": "manav_elq6",
+    "data": {
+      "first name": "Maanav",
+      "last name": "Jyothinagaram",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "praveena_dhfk",
+        "srikanth_e5wn"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "maanya_ezc5",
+    "data": {
+      "first name": "Maanya",
+      "last name": "Jyothinagaram",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "praveena_dhfk",
+        "srikanth_e5wn"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "sathvik_fxoc",
+    "data": {
+      "first name": "Sathvik",
+      "last name": "Basetty",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "naveena_7l9r",
+        "venkat_du6w"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "chandra_h1md",
+    "data": {
+      "first name": "Chandra",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1965-01-01",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "hymavathi_hf88"
+      ],
+      "parents": [
+        "venkata_subbaiah",
+        "kamakshamma"
+      ],
+      "children": [
+        "hari_hq1y",
+        "ravi_teja_hygy"
+      ]
+    }
+  },
+  {
+    "id": "hymavathi_hf88",
+    "data": {
+      "first name": "Hymavathi",
+      "last name": "Gurramkonda",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "chandra_h1md"
+      ],
+      "parents": [],
+      "children": [
+        "hari_hq1y",
+        "ravi_teja_hygy"
+      ]
+    }
+  },
+  {
+    "id": "hari_hq1y",
+    "data": {
+      "first name": "Hari",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1995-12-28",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "deepthi_i9po"
+      ],
+      "parents": [
+        "chandra_h1md",
+        "hymavathi_hf88"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "ravi_teja_hygy",
+    "data": {
+      "first name": "Ravi Teja",
+      "last name": "Gurramkonda",
+      "gender": "M",
+      "birthday": "1997-12-20",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [],
+      "parents": [
+        "chandra_h1md",
+        "hymavathi_hf88"
+      ],
+      "children": []
+    }
+  },
+  {
+    "id": "deepthi_i9po",
+    "data": {
+      "first name": "Deepthi",
+      "last name": "",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "hari_hq1y"
+      ],
+      "parents": [],
+      "children": []
+    }
+  },
+  {
+    "id": "dhalinaidu_00yp",
+    "data": {
+      "first name": "Dhalinaidu",
+      "last name": "Gompa",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "rama_lakshmi_0hno"
+      ],
+      "parents": [],
+      "children": [
+        "satyaveni"
+      ]
+    }
+  },
+  {
+    "id": "rama_lakshmi_0hno",
+    "data": {
+      "first name": "Rama Lakshmi",
+      "last name": "",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "dhalinaidu_00yp"
+      ],
+      "parents": [],
+      "children": [
+        "satyaveni"
+      ]
+    }
+  },
+  {
+    "id": "chanchayya_15bf",
+    "data": {
+      "first name": "Chanchayya",
+      "last name": "Kandati",
+      "gender": "M",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "adi_lakshmi_23zi"
+      ],
+      "parents": [],
+      "children": [
+        "venkatesh"
+      ]
+    }
+  },
+  {
+    "id": "adi_lakshmi_23zi",
+    "data": {
+      "first name": "Adi Lakshmi",
+      "last name": "Kandati",
+      "gender": "F",
+      "birthday": "",
+      "avatar": ""
+    },
+    "rels": {
+      "spouses": [
+        "chanchayya_15bf"
+      ],
+      "parents": [],
+      "children": [
+        "venkatesh"
+      ]
+    }
+  }
+]

@@ -7,10 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "encrypt": "node scripts/encrypt.js"
+    "encrypt": "node scripts/encrypt.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "family-chart": "^0.9.0",
     "vite": "^8.0.5"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.3"
   }
 }

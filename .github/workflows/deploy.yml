@@ -17,6 +17,19 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  test-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci --loglevel info
+      - run: npm test
+
   test-verify-encryption:
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +60,7 @@ jobs:
           done
 
   npm-build:
-    needs: test-verify-encryption
+    needs: [test-npm, test-verify-encryption]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

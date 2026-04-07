@@ -209,9 +209,9 @@ export function changePrincipal(newId) {
   updateToggleButton();
 }
 
-function buildFamilyGraph() {
+export function buildFamilyGraph(data) {
   const graph = new Map();
-  familyData.forEach(p => {
+  (data || familyData).forEach(p => {
     if (!graph.has(p.id)) graph.set(p.id, new Set());
     for (const rel of ['parents', 'spouses', 'children']) {
       (p.rels[rel] || []).forEach(rid => {
@@ -224,9 +224,9 @@ function buildFamilyGraph() {
   return graph;
 }
 
-function findPathBFS(fromId, toId) {
+export function findPathBFS(fromId, toId, data) {
   if (fromId === toId) return [fromId];
-  const graph = buildFamilyGraph();
+  const graph = buildFamilyGraph(data);
   const visited = new Set([fromId]);
   const queue = [[fromId]];
   while (queue.length > 0) {
@@ -420,8 +420,8 @@ function updateToggleButton() {
   btn.textContent = isFullTreeView ? 'Show Principal Root' : 'Show Full Tree';
 }
 
-function findRootOf(startId) {
-  const personMap = new Map(familyData.map(p => [p.id, p]));
+export function findRootOf(startId, data) {
+  const personMap = new Map((data || familyData).map(p => [p.id, p]));
   let current = startId;
   const visited = new Set();
 

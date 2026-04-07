@@ -2,3 +2,8 @@ node_modules
 dist
 .DS_Store
 public/data/*.json
+public/avatars/*.png
+public/avatars/*.jpg
+public/avatars/*.jpeg
+public/avatars/*.webp
+public/avatars/*.gif

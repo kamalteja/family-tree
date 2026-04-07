@@ -1,4 +1,5 @@
 {
-  "family.enc": "c5c07a3b327ed453bdbd83763af5895826a5a33ff89a409528bad6c9f38be67a",
-  "kinship-rules.enc": "ee998452d2c3b9ff7386cb1be556531b53d6a21c48463cafff49dfe2ecc348cf"
+  "public/data/family.enc": "c6a09713348c37052d51a134d4ed6462b8079093b67a54750454ced874249393",
+  "public/data/kinship-rules.enc": "a59d265987566c1d018f161c08b03fc3bd2c9f8b36810c02931507de2484b6d6",
+  "public/avatars/kamal.png.enc": "c4fb16de0abb2cabde1a5889cecb5c45abc9845125ab4a232a9245ad260a92fa"
 }

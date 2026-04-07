@@ -1,10 +1,9 @@
 const SALT_LEN = 16;
 const IV_LEN = 12;
-const TAG_LEN = 16;
 const KEY_LEN = 32;
 const ITERATIONS = 100_000;
 
-export async function decryptFamilyData(encryptedBase64, password) {
+async function decryptRaw(encryptedBase64, password) {
   const raw = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
 
   const salt = raw.slice(0, SALT_LEN);
@@ -27,11 +26,15 @@ export async function decryptFamilyData(encryptedBase64, password) {
     ['decrypt']
   );
 
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    ciphertextWithTag
-  );
+  return crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertextWithTag);
+}
 
+export async function decryptFamilyData(encryptedBase64, password) {
+  const decrypted = await decryptRaw(encryptedBase64, password);
   return new TextDecoder().decode(decrypted);
+}
+
+export async function decryptToBlob(encryptedBase64, password, mimeType) {
+  const decrypted = await decryptRaw(encryptedBase64, password);
+  return URL.createObjectURL(new Blob([decrypted], { type: mimeType }));
 }

@@ -43,7 +43,7 @@ family-tree/
 
 ## Prerequisites
 
-- **Node.js** ≥ 18 (20 recommended)
+- **Node.js** ≥ 24
 - **npm**
 
 ## Local development

@@ -117,7 +117,10 @@
     <aside id="editorPanel" style="display:none;">
       <div class="editor-header">
         <h2>Edit Family Member</h2>
+      </div>
+      <div class="editor-header-actions">
         <button id="addPersonBtn" class="btn btn-primary">+ Add Person</button>
+        <button id="qualityBtn" class="btn btn-secondary">Data Quality</button>
       </div>
       <form id="personForm" style="display:none;">
         <input type="hidden" id="personId" />
@@ -159,6 +162,14 @@
         </div>
       </form>
       <div id="personList"></div>
+    </aside>
+
+    <aside id="qualityPanel" style="display:none;">
+      <div class="editor-header">
+        <h2>Data Quality</h2>
+        <button id="closeQualityBtn" class="btn btn-secondary">Close</button>
+      </div>
+      <div id="qualityList"></div>
     </aside>
   </div>
 

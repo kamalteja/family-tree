@@ -625,6 +625,76 @@ body {
   font-weight: 600;
 }
 
+.editor-header-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.editor-header-actions .btn {
+  flex: 1;
+}
+
+/* ---- Quality Panel ---- */
+
+#qualityPanel {
+  position: fixed;
+  top: var(--toolbar-height, 53px);
+  right: 340px;
+  bottom: 0;
+  width: 320px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 89;
+  padding: 16px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.quality-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.quality-item:hover {
+  background: var(--surface-hover);
+}
+
+.quality-item-name {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.quality-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.quality-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--danger);
+  color: #fff;
+}
+
+.quality-summary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
 /* ---- Form ---- */
 
 .form-group {

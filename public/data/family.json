@@ -1,6 +1,6 @@
 [
   {
-    "id": "kamal",
+    "id": "kamal_teja_gurramkonda_66kf",
     "data": {
       "first name": "Kamal Teja",
       "last name": "Gurramkonda",
@@ -10,17 +10,17 @@
     },
     "rels": {
       "spouses": [
-        "tanvi"
+        "mahalakshmi_tanvi_kandati_4iiu"
       ],
       "parents": [
-        "ramanaiah",
-        "sreedevi"
+        "ramanaiah_gurramkonda_f3mu",
+        "sreedevi_gurramkonda_ksru"
       ],
       "children": []
     }
   },
   {
-    "id": "tanvi",
+    "id": "mahalakshmi_tanvi_kandati_4iiu",
     "data": {
       "first name": "Mahalakshmi Tanvi",
       "last name": "Kandati",
@@ -30,17 +30,17 @@
     },
     "rels": {
       "spouses": [
-        "kamal"
+        "kamal_teja_gurramkonda_66kf"
       ],
       "parents": [
-        "venkatesh",
-        "satyaveni"
+        "venkatesh_kandati_95l9",
+        "satyaveni_kandati_gdbs"
       ],
       "children": []
     }
   },
   {
-    "id": "akhil",
+    "id": "akhil_teja_gurramkonda_0pog",
     "data": {
       "first name": "Akhil Teja",
       "last name": "Gurramkonda",
@@ -50,19 +50,19 @@
     },
     "rels": {
       "spouses": [
-        "snehala"
+        "snehala_batchala_zw26"
       ],
       "parents": [
-        "ramanaiah",
-        "sreedevi"
+        "ramanaiah_gurramkonda_f3mu",
+        "sreedevi_gurramkonda_ksru"
       ],
       "children": [
-        "sahil"
+        "ghana_sahil_gurramkonda_5822"
       ]
     }
   },
   {
-    "id": "snehala",
+    "id": "snehala_batchala_zw26",
     "data": {
       "first name": "Snehala",
       "last name": "Batchala",
@@ -72,19 +72,19 @@
     },
     "rels": {
       "spouses": [
-        "akhil"
+        "akhil_teja_gurramkonda_0pog"
       ],
       "parents": [
-        "prasad",
-        "vani"
+        "prasad_batchala_wvkh",
+        "vani_batchala_i1j3"
       ],
       "children": [
-        "sahil"
+        "ghana_sahil_gurramkonda_5822"
       ]
     }
   },
   {
-    "id": "murali",
+    "id": "murali_batchala_4iir",
     "data": {
       "first name": "Murali",
       "last name": "Batchala",
@@ -94,14 +94,14 @@
     },
     "rels": {
       "spouses": [
-        "oohala"
+        "oohala_batchala_6inu"
       ],
       "parents": [],
       "children": []
     }
   },
   {
-    "id": "oohala",
+    "id": "oohala_batchala_6inu",
     "data": {
       "first name": "Oohala",
       "last name": "Batchala",
@@ -111,17 +111,17 @@
     },
     "rels": {
       "spouses": [
-        "murali"
+        "murali_batchala_4iir"
       ],
       "parents": [
-        "prasad",
-        "vani"
+        "prasad_batchala_wvkh",
+        "vani_batchala_i1j3"
       ],
       "children": []
     }
   },
   {
-    "id": "ramanaiah",
+    "id": "ramanaiah_gurramkonda_f3mu",
     "data": {
       "first name": "Ramanaiah",
       "last name": "Gurramkonda",
@@ -131,20 +131,20 @@
     },
     "rels": {
       "spouses": [
-        "sreedevi"
+        "sreedevi_gurramkonda_ksru"
       ],
       "parents": [
-        "venkata_subbaiah",
-        "kamakshamma"
+        "venkata_subbaiah_gurramkonda_o78p",
+        "kamakshamma_gurramkonda_0e2k"
       ],
       "children": [
-        "akhil",
-        "kamal"
+        "akhil_teja_gurramkonda_0pog",
+        "kamal_teja_gurramkonda_66kf"
       ]
     }
   },
   {
-    "id": "sreedevi",
+    "id": "sreedevi_gurramkonda_ksru",
     "data": {
       "first name": "Sreedevi",
       "last name": "Gurramkonda",
@@ -154,20 +154,20 @@
     },
     "rels": {
       "spouses": [
-        "ramanaiah"
+        "ramanaiah_gurramkonda_f3mu"
       ],
       "parents": [
-        "narasamma_rd84",
-        "mom_thatayya_7bcn"
+        "narasamma_akumalla_rd84",
+        "subbanna_akumalla_fyzj"
       ],
       "children": [
-        "akhil",
-        "kamal"
+        "akhil_teja_gurramkonda_0pog",
+        "kamal_teja_gurramkonda_66kf"
       ]
     }
   },
   {
-    "id": "venkatesh",
+    "id": "venkatesh_kandati_95l9",
     "data": {
       "first name": "Venkatesh",
       "last name": "Kandati",
@@ -177,20 +177,20 @@
     },
     "rels": {
       "spouses": [
-        "satyaveni"
+        "satyaveni_kandati_gdbs"
       ],
       "parents": [
-        "chanchayya_15bf",
-        "adi_lakshmi_23zi"
+        "chanchayya_kandati_15bf",
+        "adi_lakshmi_kandati_23zi"
       ],
       "children": [
-        "tanvi",
-        "neehar_55dz"
+        "mahalakshmi_tanvi_kandati_4iiu",
+        "neehar_kandati_55dz"
       ]
     }
   },
   {
-    "id": "satyaveni",
+    "id": "satyaveni_kandati_gdbs",
     "data": {
       "first name": "Satyaveni",
       "last name": "Kandati",
@@ -200,20 +200,20 @@
     },
     "rels": {
       "spouses": [
-        "venkatesh"
+        "venkatesh_kandati_95l9"
       ],
       "parents": [
-        "dhalinaidu_00yp",
+        "dhalinaidu_gompa_00yp",
         "rama_lakshmi_0hno"
       ],
       "children": [
-        "tanvi",
-        "neehar_55dz"
+        "mahalakshmi_tanvi_kandati_4iiu",
+        "neehar_kandati_55dz"
       ]
     }
   },
   {
-    "id": "prasad",
+    "id": "prasad_batchala_wvkh",
     "data": {
       "first name": "Prasad",
       "last name": "Batchala",
@@ -223,17 +223,17 @@
     },
     "rels": {
       "spouses": [
-        "vani"
+        "vani_batchala_i1j3"
       ],
       "parents": [],
       "children": [
-        "snehala",
-        "oohala"
+        "snehala_batchala_zw26",
+        "oohala_batchala_6inu"
       ]
     }
   },
   {
-    "id": "vani",
+    "id": "vani_batchala_i1j3",
     "data": {
       "first name": "Vani",
       "last name": "Batchala",
@@ -243,17 +243,17 @@
     },
     "rels": {
       "spouses": [
-        "prasad"
+        "prasad_batchala_wvkh"
       ],
       "parents": [],
       "children": [
-        "snehala",
-        "oohala"
+        "snehala_batchala_zw26",
+        "oohala_batchala_6inu"
       ]
     }
   },
   {
-    "id": "sahil",
+    "id": "ghana_sahil_gurramkonda_5822",
     "data": {
       "first name": "Ghana Sahil",
       "last name": "Gurramkonda",
@@ -264,14 +264,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "akhil",
-        "snehala"
+        "akhil_teja_gurramkonda_0pog",
+        "snehala_batchala_zw26"
       ],
       "children": []
     }
   },
   {
-    "id": "venkata_subbaiah",
+    "id": "venkata_subbaiah_gurramkonda_o78p",
     "data": {
       "first name": "Venkata Subbaiah",
       "last name": "Gurramkonda",
@@ -281,17 +281,17 @@
     },
     "rels": {
       "spouses": [
-        "kamakshamma"
+        "kamakshamma_gurramkonda_0e2k"
       ],
       "parents": [],
       "children": [
-        "ramanaiah",
-        "chandra_h1md"
+        "ramanaiah_gurramkonda_f3mu",
+        "chandra_gurramkonda_h1md"
       ]
     }
   },
   {
-    "id": "kamakshamma",
+    "id": "kamakshamma_gurramkonda_0e2k",
     "data": {
       "first name": "Kamakshamma",
       "last name": "Gurramkonda",
@@ -301,17 +301,17 @@
     },
     "rels": {
       "spouses": [
-        "venkata_subbaiah"
+        "venkata_subbaiah_gurramkonda_o78p"
       ],
       "parents": [],
       "children": [
-        "ramanaiah",
-        "chandra_h1md"
+        "ramanaiah_gurramkonda_f3mu",
+        "chandra_gurramkonda_h1md"
       ]
     }
   },
   {
-    "id": "narasamma_rd84",
+    "id": "narasamma_akumalla_rd84",
     "data": {
       "first name": "Narasamma",
       "last name": "Akumalla",
@@ -321,34 +321,34 @@
     },
     "rels": {
       "spouses": [
-        "mom_thatayya_7bcn"
+        "subbanna_akumalla_fyzj"
       ],
       "parents": [],
       "children": [
-        "sreedevi",
+        "sreedevi_gurramkonda_ksru",
         "sarada_ggvs",
-        "prasad_h1xu"
+        "prasad_akumalla_h1xu"
       ]
     }
   },
   {
-    "id": "mom_thatayya_7bcn",
+    "id": "subbanna_akumalla_fyzj",
     "data": {
-      "first name": "Mom thatayya",
-      "last name": "asd",
+      "first name": "Subbanna",
+      "last name": "Akumalla",
       "gender": "M",
       "birthday": "",
       "avatar": ""
     },
     "rels": {
       "spouses": [
-        "narasamma_rd84"
+        "narasamma_akumalla_rd84"
       ],
       "parents": [],
       "children": [
-        "sreedevi",
+        "sreedevi_gurramkonda_ksru",
         "sarada_ggvs",
-        "prasad_h1xu"
+        "prasad_akumalla_h1xu"
       ]
     }
   },
@@ -363,20 +363,20 @@
     },
     "rels": {
       "spouses": [
-        "subbanarasaiah_765i"
+        "subbanarasaiah_akumalla_765i"
       ],
       "parents": [
-        "narasamma_rd84",
-        "mom_thatayya_7bcn"
+        "narasamma_akumalla_rd84",
+        "subbanna_akumalla_fyzj"
       ],
       "children": [
-        "naveena_7l9r",
-        "praveena_dhfk"
+        "naveena_basetty_7l9r",
+        "praveena_jyothinagaram_dhfk"
       ]
     }
   },
   {
-    "id": "prasad_h1xu",
+    "id": "prasad_akumalla_h1xu",
     "data": {
       "first name": "Prasad",
       "last name": "Akumalla",
@@ -386,20 +386,20 @@
     },
     "rels": {
       "spouses": [
-        "padma_hs2b"
+        "padma_akumalla_hs2b"
       ],
       "parents": [
-        "narasamma_rd84",
-        "mom_thatayya_7bcn"
+        "narasamma_akumalla_rd84",
+        "subbanna_akumalla_fyzj"
       ],
       "children": [
-        "harsha_hcl8",
-        "vishnu_i242"
+        "harsha_akumalla_hcl8",
+        "vishnu_akumalla_i242"
       ]
     }
   },
   {
-    "id": "harsha_hcl8",
+    "id": "harsha_akumalla_hcl8",
     "data": {
       "first name": "Harsha",
       "last name": "Akumalla",
@@ -410,14 +410,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "prasad_h1xu",
-        "padma_hs2b"
+        "prasad_akumalla_h1xu",
+        "padma_akumalla_hs2b"
       ],
       "children": []
     }
   },
   {
-    "id": "padma_hs2b",
+    "id": "padma_akumalla_hs2b",
     "data": {
       "first name": "Padma",
       "last name": "Akumalla",
@@ -427,17 +427,17 @@
     },
     "rels": {
       "spouses": [
-        "prasad_h1xu"
+        "prasad_akumalla_h1xu"
       ],
       "parents": [],
       "children": [
-        "harsha_hcl8",
-        "vishnu_i242"
+        "harsha_akumalla_hcl8",
+        "vishnu_akumalla_i242"
       ]
     }
   },
   {
-    "id": "vishnu_i242",
+    "id": "vishnu_akumalla_i242",
     "data": {
       "first name": "Vishnu",
       "last name": "Akumalla",
@@ -448,14 +448,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "prasad_h1xu",
-        "padma_hs2b"
+        "prasad_akumalla_h1xu",
+        "padma_akumalla_hs2b"
       ],
       "children": []
     }
   },
   {
-    "id": "neehar_55dz",
+    "id": "neehar_kandati_55dz",
     "data": {
       "first name": "Neehar",
       "last name": "Kandati",
@@ -466,14 +466,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "venkatesh",
-        "satyaveni"
+        "venkatesh_kandati_95l9",
+        "satyaveni_kandati_gdbs"
       ],
       "children": []
     }
   },
   {
-    "id": "subbanarasaiah_765i",
+    "id": "subbanarasaiah_akumalla_765i",
     "data": {
       "first name": "Subbanarasaiah",
       "last name": "Akumalla",
@@ -487,13 +487,13 @@
       ],
       "parents": [],
       "children": [
-        "naveena_7l9r",
-        "praveena_dhfk"
+        "naveena_basetty_7l9r",
+        "praveena_jyothinagaram_dhfk"
       ]
     }
   },
   {
-    "id": "naveena_7l9r",
+    "id": "naveena_basetty_7l9r",
     "data": {
       "first name": "Naveena",
       "last name": "Basetty",
@@ -503,19 +503,19 @@
     },
     "rels": {
       "spouses": [
-        "venkat_du6w"
+        "venkat_basetty_du6w"
       ],
       "parents": [
         "sarada_ggvs",
-        "subbanarasaiah_765i"
+        "subbanarasaiah_akumalla_765i"
       ],
       "children": [
-        "sathvik_fxoc"
+        "sathvik_basetty_fxoc"
       ]
     }
   },
   {
-    "id": "praveena_dhfk",
+    "id": "praveena_jyothinagaram_dhfk",
     "data": {
       "first name": "Praveena",
       "last name": "Jyothinagaram",
@@ -525,20 +525,20 @@
     },
     "rels": {
       "spouses": [
-        "srikanth_e5wn"
+        "srikanth_jyothinagaram_e5wn"
       ],
       "parents": [
         "sarada_ggvs",
-        "subbanarasaiah_765i"
+        "subbanarasaiah_akumalla_765i"
       ],
       "children": [
-        "maanya_ezc5",
-        "manav_elq6"
+        "maanya_jyothinagaram_ezc5",
+        "maanav_jyothinagaram_elq6"
       ]
     }
   },
   {
-    "id": "venkat_du6w",
+    "id": "venkat_basetty_du6w",
     "data": {
       "first name": "Venkat",
       "last name": "Basetty",
@@ -548,16 +548,16 @@
     },
     "rels": {
       "spouses": [
-        "naveena_7l9r"
+        "naveena_basetty_7l9r"
       ],
       "parents": [],
       "children": [
-        "sathvik_fxoc"
+        "sathvik_basetty_fxoc"
       ]
     }
   },
   {
-    "id": "srikanth_e5wn",
+    "id": "srikanth_jyothinagaram_e5wn",
     "data": {
       "first name": "Srikanth",
       "last name": "Jyothinagaram",
@@ -567,17 +567,17 @@
     },
     "rels": {
       "spouses": [
-        "praveena_dhfk"
+        "praveena_jyothinagaram_dhfk"
       ],
       "parents": [],
       "children": [
-        "maanya_ezc5",
-        "manav_elq6"
+        "maanya_jyothinagaram_ezc5",
+        "maanav_jyothinagaram_elq6"
       ]
     }
   },
   {
-    "id": "manav_elq6",
+    "id": "maanav_jyothinagaram_elq6",
     "data": {
       "first name": "Maanav",
       "last name": "Jyothinagaram",
@@ -588,14 +588,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "praveena_dhfk",
-        "srikanth_e5wn"
+        "praveena_jyothinagaram_dhfk",
+        "srikanth_jyothinagaram_e5wn"
       ],
       "children": []
     }
   },
   {
-    "id": "maanya_ezc5",
+    "id": "maanya_jyothinagaram_ezc5",
     "data": {
       "first name": "Maanya",
       "last name": "Jyothinagaram",
@@ -606,14 +606,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "praveena_dhfk",
-        "srikanth_e5wn"
+        "praveena_jyothinagaram_dhfk",
+        "srikanth_jyothinagaram_e5wn"
       ],
       "children": []
     }
   },
   {
-    "id": "sathvik_fxoc",
+    "id": "sathvik_basetty_fxoc",
     "data": {
       "first name": "Sathvik",
       "last name": "Basetty",
@@ -624,14 +624,14 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "naveena_7l9r",
-        "venkat_du6w"
+        "naveena_basetty_7l9r",
+        "venkat_basetty_du6w"
       ],
       "children": []
     }
   },
   {
-    "id": "chandra_h1md",
+    "id": "chandra_gurramkonda_h1md",
     "data": {
       "first name": "Chandra",
       "last name": "Gurramkonda",
@@ -641,20 +641,20 @@
     },
     "rels": {
       "spouses": [
-        "hymavathi_hf88"
+        "hymavathi_gurramkonda_hf88"
       ],
       "parents": [
-        "venkata_subbaiah",
-        "kamakshamma"
+        "venkata_subbaiah_gurramkonda_o78p",
+        "kamakshamma_gurramkonda_0e2k"
       ],
       "children": [
-        "hari_hq1y",
-        "ravi_teja_hygy"
+        "hari_gurramkonda_hq1y",
+        "ravi_teja_gurramkonda_hygy"
       ]
     }
   },
   {
-    "id": "hymavathi_hf88",
+    "id": "hymavathi_gurramkonda_hf88",
     "data": {
       "first name": "Hymavathi",
       "last name": "Gurramkonda",
@@ -664,17 +664,17 @@
     },
     "rels": {
       "spouses": [
-        "chandra_h1md"
+        "chandra_gurramkonda_h1md"
       ],
       "parents": [],
       "children": [
-        "hari_hq1y",
-        "ravi_teja_hygy"
+        "hari_gurramkonda_hq1y",
+        "ravi_teja_gurramkonda_hygy"
       ]
     }
   },
   {
-    "id": "hari_hq1y",
+    "id": "hari_gurramkonda_hq1y",
     "data": {
       "first name": "Hari",
       "last name": "Gurramkonda",
@@ -687,14 +687,14 @@
         "deepthi_i9po"
       ],
       "parents": [
-        "chandra_h1md",
-        "hymavathi_hf88"
+        "chandra_gurramkonda_h1md",
+        "hymavathi_gurramkonda_hf88"
       ],
       "children": []
     }
   },
   {
-    "id": "ravi_teja_hygy",
+    "id": "ravi_teja_gurramkonda_hygy",
     "data": {
       "first name": "Ravi Teja",
       "last name": "Gurramkonda",
@@ -705,8 +705,8 @@
     "rels": {
       "spouses": [],
       "parents": [
-        "chandra_h1md",
-        "hymavathi_hf88"
+        "chandra_gurramkonda_h1md",
+        "hymavathi_gurramkonda_hf88"
       ],
       "children": []
     }
@@ -722,14 +722,14 @@
     },
     "rels": {
       "spouses": [
-        "hari_hq1y"
+        "hari_gurramkonda_hq1y"
       ],
       "parents": [],
       "children": []
     }
   },
   {
-    "id": "dhalinaidu_00yp",
+    "id": "dhalinaidu_gompa_00yp",
     "data": {
       "first name": "Dhalinaidu",
       "last name": "Gompa",
@@ -743,7 +743,7 @@
       ],
       "parents": [],
       "children": [
-        "satyaveni"
+        "satyaveni_kandati_gdbs"
       ]
     }
   },
@@ -758,16 +758,16 @@
     },
     "rels": {
       "spouses": [
-        "dhalinaidu_00yp"
+        "dhalinaidu_gompa_00yp"
       ],
       "parents": [],
       "children": [
-        "satyaveni"
+        "satyaveni_kandati_gdbs"
       ]
     }
   },
   {
-    "id": "chanchayya_15bf",
+    "id": "chanchayya_kandati_15bf",
     "data": {
       "first name": "Chanchayya",
       "last name": "Kandati",
@@ -777,16 +777,16 @@
     },
     "rels": {
       "spouses": [
-        "adi_lakshmi_23zi"
+        "adi_lakshmi_kandati_23zi"
       ],
       "parents": [],
       "children": [
-        "venkatesh"
+        "venkatesh_kandati_95l9"
       ]
     }
   },
   {
-    "id": "adi_lakshmi_23zi",
+    "id": "adi_lakshmi_kandati_23zi",
     "data": {
       "first name": "Adi Lakshmi",
       "last name": "Kandati",
@@ -796,11 +796,11 @@
     },
     "rels": {
       "spouses": [
-        "chanchayya_15bf"
+        "chanchayya_kandati_15bf"
       ],
       "parents": [],
       "children": [
-        "venkatesh"
+        "venkatesh_kandati_95l9"
       ]
     }
   }

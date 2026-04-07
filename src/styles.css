@@ -576,10 +576,10 @@ body {
 }
 
 .card-relation {
-  margin-top: 3px;
+  margin-top: 2px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0;
 }
 
 .card-relation-self {
@@ -594,9 +594,35 @@ body {
   text-transform: capitalize;
 }
 
-.relation-en {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.8);
+.relation-path {
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.relation-path .path-state {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.relation-path .path-hop {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 7px;
+  font-style: italic;
+}
+
+.relation-path .path-hop::before {
+  content: '›';
+  margin-right: 1px;
+}
+
+.relation-path .path-hop::after {
+  content: '›';
+  margin-left: 1px;
 }
 
 [data-theme="light"] .relation-te {
@@ -604,8 +630,12 @@ body {
   text-shadow: none;
 }
 
-[data-theme="light"] .relation-en {
-  color: #444;
+[data-theme="light"] .relation-path .path-state {
+  color: #333;
+}
+
+[data-theme="light"] .relation-path .path-hop {
+  color: #888;
 }
 
 /* ---- Editor Panel ---- */

@@ -16,10 +16,10 @@ export function resolveAge(referencePerson, targetPerson) {
  * Generic hop labels used when no specific transition rule exists.
  */
 const GENERIC_HOP_LABELS = {
-  parent: { M: { en: 'father', te: 'nanna' }, F: { en: 'mother', te: 'amma' } },
-  child:  { M: { en: 'son',    te: 'koduku' }, F: { en: 'daughter', te: 'kuthuru' } },
-  spouse: { M: { en: 'husband', te: 'bhartha' }, F: { en: 'wife', te: 'bharya' } },
-  sibling: { M: { en: 'brother', te: 'brother' }, F: { en: 'sister', te: 'sister' } },
+  parent:  { M: 'nanna',   F: 'amma' },
+  child:   { M: 'koduku',  F: 'kuthuru' },
+  spouse:  { M: 'bhartha', F: 'bharya' },
+  sibling: { M: 'brother', F: 'sister' },
 };
 
 /**
@@ -29,17 +29,15 @@ const GENERIC_HOP_LABELS = {
  */
 export function composeFallbackLabel(currentStateLabels, hopType, targetPerson) {
   const gender = targetPerson.data.gender;
-  const hopLabels = GENERIC_HOP_LABELS[hopType]?.[gender];
+  const hopLabel = GENERIC_HOP_LABELS[hopType]?.[gender];
 
-  if (!hopLabels) {
+  if (!hopLabel) {
     return {
-      en: `${currentStateLabels.en}'s relative`,
       te: `${currentStateLabels.te} relative`,
     };
   }
 
   return {
-    en: `${currentStateLabels.en}'s ${hopLabels.en}`,
-    te: `${currentStateLabels.te} ${hopLabels.te}`,
+    te: `${currentStateLabels.te} ${hopLabel}`,
   };
 }

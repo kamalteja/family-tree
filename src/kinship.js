@@ -1,5 +1,7 @@
 import { resolveAge, composeFallbackLabel } from './telugu-terms.js';
 
+const MAX_EQUIVALENCE_DEPTH = 5;
+
 /**
  * Build an adjacency representation from the family data for BFS traversal.
  * Each edge is typed: "parent", "child", "spouse".
@@ -114,11 +116,12 @@ export function normalizePath(rawPath, principalId, personMap) {
 export function resolveRelationship(normalizedPath, personMap, rules, principalId) {
   if (normalizedPath.length === 0) {
     const selfState = rules.states['self'];
-    return { stateKey: 'self', en: selfState.en, te: selfState.te };
+    return { stateKey: 'self', te: selfState.te, path: [{ type: 'state', label: 'nenu' }] };
   }
 
   let currentState = 'self';
   const principal = personMap.get(principalId);
+  const pathTe = [{ type: 'state', label: 'nenu' }];
 
   for (let i = 0; i < normalizedPath.length; i++) {
     const step = normalizedPath[i];
@@ -139,17 +142,29 @@ export function resolveRelationship(normalizedPath, personMap, rules, principalI
       ageContext = resolveAge(principal, targetPerson);
     }
 
-    const transition = findTransition(rules.transitions, currentState, step.hop, targetGender, ageContext);
+    let transition = findTransition(rules.transitions, currentState, step.hop, targetGender, ageContext);
+
+    if (!transition && rules.equivalences) {
+      let eq = currentState;
+      for (let depth = 0; depth < MAX_EQUIVALENCE_DEPTH && !transition; depth++) {
+        eq = rules.equivalences[eq];
+        if (!eq) break;
+        transition = findTransition(rules.transitions, eq, step.hop, targetGender, ageContext);
+      }
+    }
 
     if (transition) {
       currentState = transition.to;
+      pathTe.push({ type: 'hop', label: step.hop });
+      const stateLabel = rules.states[transition.to];
+      if (stateLabel) pathTe.push({ type: 'state', label: stateLabel.te });
     } else {
       const currentLabel = rules.states[currentState];
       const fallback = composeFallbackLabel(currentLabel, step.hop, targetPerson);
       return {
         stateKey: null,
-        en: fallback.en,
         te: fallback.te,
+        path: pathTe,
       };
     }
   }
@@ -157,8 +172,8 @@ export function resolveRelationship(normalizedPath, personMap, rules, principalI
   const finalState = rules.states[currentState];
   return {
     stateKey: currentState,
-    en: finalState ? finalState.en : currentState,
     te: finalState ? finalState.te : currentState,
+    path: pathTe,
   };
 }
 

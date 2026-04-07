@@ -387,9 +387,17 @@ function createCardHtml(d) {
     if (isMainPerson) {
       relationHtml = `<div class="card-relation card-relation-self">${labels.te}</div>`;
     } else {
+      const hasPath = labels.path && labels.path.length > 1;
+      const pathHtml = hasPath
+        ? labels.path.map(p =>
+            p.type === 'hop'
+              ? `<span class="path-hop">${p.label}</span>`
+              : `<span class="path-state">${p.label}</span>`
+          ).join('')
+        : '';
       relationHtml = `<div class="card-relation">
         <span class="relation-te">${labels.te}</span>
-        <span class="relation-en">${labels.en}</span>
+        ${pathHtml ? `<span class="relation-path">${pathHtml}</span>` : ''}
       </div>`;
     }
   }

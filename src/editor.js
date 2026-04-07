@@ -334,7 +334,7 @@ function exportJson() {
   };
 }
 
-const ALL_FIELDS = ['first name', 'last name', 'gender', 'birthday', 'avatar'];
+const ALL_FIELDS = ['first name', 'last name', 'gender', 'birthday'];
 
 function scanMissingAttributes() {
   const data = getFamilyData();

@@ -4,12 +4,12 @@
  * Uses birthday year -- lower year = elder.
  */
 export function resolveAge(referencePerson, targetPerson) {
-  const refYear = parseInt(referencePerson.data.birthday, 10);
-  const tgtYear = parseInt(targetPerson.data.birthday, 10);
+  const refDate = new Date(referencePerson.data.birthday);
+  const tgtDate = new Date(targetPerson.data.birthday);
 
-  if (isNaN(refYear) || isNaN(tgtYear)) return 'elder';
+  if (isNaN(refDate.getTime()) || isNaN(tgtDate.getTime())) return 'elder';
 
-  return tgtYear < refYear ? 'elder' : 'younger';
+  return tgtDate < refDate ? 'elder' : 'younger';
 }
 
 /**

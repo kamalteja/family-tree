@@ -333,6 +333,7 @@ function createChart() {
   const cardInst = chart.setCardHtml();
   cardInst
     .setCardInnerHtmlCreator(createCardHtml)
+    .setMiniTree(true)
     .setStyle('default')
     .setCardDim({
       w: 220,

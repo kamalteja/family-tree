@@ -174,7 +174,7 @@ function handleSave(e) {
 
     syncBidirectionalRels(data, editingPersonId, oldParents, selectedParents, oldSpouses, selectedSpouses, oldChildren, selectedChildren);
   } else {
-    const newId = generateId(firstName);
+    const newId = generateId(firstName, lastName);
     const newPerson = {
       id: newId,
       data: { 'first name': firstName, 'last name': lastName, gender, birthday, avatar: '' },
@@ -259,10 +259,12 @@ function handleDelete() {
   renderPersonList();
 }
 
-function generateId(name) {
-  const base = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-  const suffix = Date.now().toString(36).slice(-4);
-  return `${base}_${suffix}`;
+function generateId(firstName, lastName) {
+  const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  const parts = [normalize(firstName)];
+  if (lastName) parts.push(normalize(lastName));
+  const suffix = Array.from(crypto.getRandomValues(new Uint8Array(3)), b => b.toString(36).slice(-1)).join('').padEnd(4, '0').slice(0, 4);
+  return [...parts, suffix].join('_');
 }
 
 function cleanData(data) {

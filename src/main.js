@@ -1,11 +1,14 @@
-import { initViewer } from './viewer.js';
+import { initViewer, getChart, setFamilyData, getFamilyData } from './viewer.js';
 import { initEditor } from './editor.js';
 import { computeDiff } from './diff.js';
+import { decryptFamilyData } from './crypto.js';
 import './styles.css';
+
+const PASSWORD_KEY = 'family-tree-password';
 
 function initTheme() {
   const saved = localStorage.getItem('family-tree-theme');
-  const theme = saved || 'dark';
+  const theme = saved || 'light';
   document.documentElement.setAttribute('data-theme', theme);
   updateThemeIcon(theme);
 
@@ -46,10 +49,25 @@ function initJsonEditor() {
   let baseJson = '';
   let showingDiff = false;
 
-  fetch(import.meta.env.BASE_URL + 'data/family.json')
-    .then(r => r.json())
-    .then(data => { baseJson = JSON.stringify(data, null, 2); })
-    .catch(() => { baseJson = '[]'; });
+  async function loadBaseJson() {
+    try {
+      async function fetchDataFile(name) {
+        if (import.meta.env.DEV) {
+          const res = await fetch(import.meta.env.BASE_URL + `data/${name}.json`);
+          if (res.ok && (res.headers.get('content-type') || '').includes('json')) return res.json();
+        }
+        const res = await fetch(import.meta.env.BASE_URL + `data/${name}.enc`);
+        const encrypted = await res.text();
+        const password = localStorage.getItem(PASSWORD_KEY) || '';
+        return JSON.parse(await decryptFamilyData(encrypted, password));
+      }
+      const data = await fetchDataFile('family');
+      baseJson = JSON.stringify(data, null, 2);
+    } catch {
+      baseJson = '[]';
+    }
+  }
+  loadBaseJson();
 
   function renderDiff() {
     const oldLines = baseJson.split('\n');
@@ -153,13 +171,100 @@ function initInfoModal() {
   });
 }
 
+function showApp() {
+  document.getElementById('passwordModal').style.display = 'none';
+  document.getElementById('app').style.display = '';
+}
+
+function lockApp() {
+  localStorage.removeItem(PASSWORD_KEY);
+  localStorage.removeItem('family-tree-data');
+  setFamilyData([]);
+  document.getElementById('FamilyChart').innerHTML = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('passwordModal').style.display = '';
+  const input = document.getElementById('passwordInput');
+  input.value = '';
+  document.getElementById('passwordError').textContent = '';
+  input.focus();
+}
+
+function initLockButton() {
+  document.getElementById('lockBtn').addEventListener('click', () => {
+    if (localStorage.getItem('family-tree-data')) {
+      if (!confirm('You have local edits that haven\'t been exported. Locking will discard them. Continue?')) return;
+    }
+    lockApp();
+  });
+}
+
+async function tryUnlock(password) {
+  await initViewer(password);
+  localStorage.setItem(PASSWORD_KEY, password);
+  showApp();
+  initEditor();
+  requestAnimationFrame(() => {
+    const chart = getChart();
+    if (chart) chart.updateTree({ tree_position: 'fit' });
+  });
+}
+
+function initPasswordModal() {
+  const modal = document.getElementById('passwordModal');
+  const input = document.getElementById('passwordInput');
+  const submitBtn = document.getElementById('passwordSubmit');
+  const errorEl = document.getElementById('passwordError');
+
+  async function submit() {
+    const password = input.value;
+    if (!password) { errorEl.textContent = 'Please enter a password.'; return; }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Decrypting…';
+    errorEl.textContent = '';
+    try {
+      await tryUnlock(password);
+    } catch {
+      errorEl.textContent = 'Wrong password. Please try again.';
+      input.value = '';
+      input.focus();
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Unlock';
+    }
+  }
+
+  submitBtn.addEventListener('click', submit);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+}
+
 async function main() {
   initTheme();
   initResetButton();
   initJsonEditor();
   initInfoModal();
-  await initViewer();
-  initEditor();
+  initLockButton();
+  initPasswordModal();
+
+  if (import.meta.env.DEV) {
+    try {
+      await initViewer();
+      showApp();
+      initEditor();
+      return;
+    } catch { /* family.json missing/invalid, fall through to password flow */ }
+  }
+
+  const cached = localStorage.getItem(PASSWORD_KEY);
+  if (cached) {
+    try {
+      await tryUnlock(cached);
+      return;
+    } catch {
+      localStorage.removeItem(PASSWORD_KEY);
+    }
+  }
+
+  document.getElementById('passwordInput').focus();
 }
 
 main();

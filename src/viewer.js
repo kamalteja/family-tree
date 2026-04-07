@@ -1,6 +1,7 @@
 import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 import { computeAllRelationships } from './kinship.js';
+import { decryptFamilyData } from './crypto.js';
 
 let chart = null;
 let familyData = [];
@@ -25,14 +26,30 @@ export function getChart() {
   return chart;
 }
 
-export async function initViewer() {
-  const [familyRes, rulesRes] = await Promise.all([
-    fetch(import.meta.env.BASE_URL + 'data/family.json'),
-    fetch(import.meta.env.BASE_URL + 'data/kinship-rules.json'),
+async function loadDataFile(name, password) {
+  if (import.meta.env.DEV) {
+    const res = await fetch(import.meta.env.BASE_URL + `data/${name}.json`);
+    if (res.ok && (res.headers.get('content-type') || '').includes('json')) {
+      return res.json();
+    }
+  }
+
+  const res = await fetch(import.meta.env.BASE_URL + `data/${name}.enc`);
+  if (!res.ok) throw new Error(`No data found: ${name}`);
+  const encrypted = await res.text();
+  if (!password) throw new Error('Password required');
+  const decrypted = await decryptFamilyData(encrypted, password);
+  return JSON.parse(decrypted);
+}
+
+export async function initViewer(password) {
+  const [rawFamilyData, rulesRes] = await Promise.all([
+    loadDataFile('family', password),
+    loadDataFile('kinship-rules', password),
   ]);
 
-  familyData = await familyRes.json();
-  kinshipRules = await rulesRes.json();
+  familyData = rawFamilyData;
+  kinshipRules = rulesRes;
 
   const saved = localStorage.getItem('family-tree-data');
   if (saved) {

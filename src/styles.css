@@ -1,3 +1,67 @@
+/* ---- Password modal ---- */
+
+.password-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #1a1a1a);
+}
+
+.password-modal-content {
+  background: var(--surface, #242424);
+  color: var(--text, #e8e8e8);
+  border-radius: 12px;
+  padding: 40px 36px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.password-modal-content h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.password-modal-content p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.password-modal-content input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid var(--border, #3a3a3a);
+  border-radius: 6px;
+  background: var(--bg, #1a1a1a);
+  color: var(--text, #e8e8e8);
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.password-modal-content input:focus {
+  border-color: var(--primary, #60a5fa);
+}
+
+.password-modal-content .btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+}
+
+.password-error {
+  color: var(--danger, #ef4444);
+  font-size: 13px;
+  margin-bottom: 10px;
+  min-height: 18px;
+}
+
 /* ---- Theme variables ---- */
 
 :root {

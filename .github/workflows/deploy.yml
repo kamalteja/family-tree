@@ -13,16 +13,14 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  npm-build:
+  test-verify-encryption:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
 
       - name: Verify public/data contains only encrypted files
         run: |
@@ -48,6 +46,17 @@ jobs:
             echo "✓ $name"
           done
 
+  npm-build:
+    needs: test-verify-encryption
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
       - run: npm ci --loglevel info
       - run: npm run build
 
@@ -65,4 +74,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

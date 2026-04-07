@@ -28,22 +28,22 @@ jobs:
           if [ ! -f "$manifest" ]; then
             echo "::error::Missing $manifest — run npm run encrypt"; exit 1
           fi
-          for f in public/data/*; do
+          for f in public/data/* public/avatars/*; do
             [ -f "$f" ] || continue
             name=$(basename "$f")
             if [[ "$name" == ".manifest" ]]; then continue; fi
             if [[ "$f" != *.enc ]]; then
               echo "::error::Non-.enc file found: $f"; exit 1
             fi
-            expected=$(python3 -c "import json; print(json.load(open('$manifest')).get('$name',''))")
+            expected=$(python3 -c "import json; print(json.load(open('$manifest')).get('$f',''))")
             if [ -z "$expected" ]; then
-              echo "::error::$name not in manifest — run npm run encrypt"; exit 1
+              echo "::error::$f not in manifest — run npm run encrypt"; exit 1
             fi
             actual=$(sha256sum "$f" | cut -d' ' -f1)
             if [ "$actual" != "$expected" ]; then
-              echo "::error::$name checksum mismatch — file was not produced by npm run encrypt"; exit 1
+              echo "::error::$f checksum mismatch — file was not produced by npm run encrypt"; exit 1
             fi
-            echo "✓ $name"
+            echo "✓ $f"
           done
 
   npm-build:

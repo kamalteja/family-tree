@@ -22,8 +22,17 @@
       <div class="toolbar-left">
         <h1 class="app-title">Family Tree</h1>
         <div class="principal-selector" id="principalSelector">
-          <label for="principalDropdown">Principal Person:</label>
-          <select id="principalDropdown"></select>
+          <label>Principal Person:</label>
+          <div class="custom-select" id="principalDropdown">
+            <button class="custom-select-trigger" id="principalTrigger" type="button">
+              <span class="custom-select-value">Select person</span>
+              <span class="custom-select-arrow">&#9662;</span>
+            </button>
+            <div class="custom-select-menu" id="principalMenu">
+              <input type="text" class="custom-select-search" id="principalSearch" placeholder="Search..." autocomplete="off" />
+              <ul class="custom-select-options" id="principalOptions"></ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="toolbar-right">

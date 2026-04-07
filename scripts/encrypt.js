@@ -1,5 +1,5 @@
 import { createCipheriv, randomBytes, pbkdf2Sync, createHash } from 'crypto';
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs';
 import { createInterface } from 'readline';
 import { join, extname, basename } from 'path';
 
@@ -8,14 +8,17 @@ const IV_LEN = 12;
 const KEY_LEN = 32;
 const ITERATIONS = 100_000;
 const DATA_DIR = 'public/data';
+const AVATARS_DIR = 'public/avatars';
+const IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
 
-function encrypt(plaintext, password) {
+function encrypt(input, password) {
   const salt = randomBytes(SALT_LEN);
   const iv = randomBytes(IV_LEN);
   const key = pbkdf2Sync(password, salt, ITERATIONS, KEY_LEN, 'sha256');
 
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input, 'utf8');
   const cipher = createCipheriv('aes-256-gcm', key, iv);
-  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const encrypted = Buffer.concat([cipher.update(buf), cipher.final()]);
   const tag = cipher.getAuthTag();
 
   return Buffer.concat([salt, iv, encrypted, tag]).toString('base64');
@@ -54,22 +57,30 @@ async function main() {
   const password = process.env.ENCRYPT_PASSWORD || await askPassword();
   if (!password) { console.error('No password provided.'); process.exit(1); }
 
-  const files = readdirSync(DATA_DIR).filter(f => extname(f) === '.json');
-  if (files.length === 0) { console.error('No .json files found in ' + DATA_DIR); process.exit(1); }
-
   const manifest = {};
-  for (const file of files) {
+
+  function encryptFile(inputPath, outputPath) {
+    const content = readFileSync(inputPath);
+    const encrypted = encrypt(content, password);
+    writeFileSync(outputPath, encrypted);
+    manifest[outputPath] = createHash('sha256').update(encrypted).digest('hex');
+    console.log(`Encrypted ${inputPath} -> ${outputPath} (${encrypted.length} bytes)`);
+  }
+
+  const dataFiles = readdirSync(DATA_DIR).filter(f => extname(f) === '.json');
+  if (dataFiles.length === 0) { console.error('No .json files found in ' + DATA_DIR); process.exit(1); }
+
+  for (const file of dataFiles) {
     const input = join(DATA_DIR, file);
-    const output = join(DATA_DIR, basename(file, '.json') + '.enc');
-    const plaintext = readFileSync(input, 'utf8');
-    JSON.parse(plaintext);
+    JSON.parse(readFileSync(input, 'utf8'));
+    encryptFile(input, join(DATA_DIR, basename(file, '.json') + '.enc'));
+  }
 
-    const encrypted = encrypt(plaintext, password);
-    writeFileSync(output, encrypted);
-
-    const hash = createHash('sha256').update(encrypted).digest('hex');
-    manifest[basename(output)] = hash;
-    console.log(`Encrypted ${input} -> ${output} (${encrypted.length} bytes)`);
+  if (existsSync(AVATARS_DIR)) {
+    const avatarFiles = readdirSync(AVATARS_DIR).filter(f => IMAGE_EXTS.has(extname(f).toLowerCase()));
+    for (const file of avatarFiles) {
+      encryptFile(join(AVATARS_DIR, file), join(AVATARS_DIR, file + '.enc'));
+    }
   }
 
   writeFileSync(join(DATA_DIR, '.manifest'), JSON.stringify(manifest, null, 2) + '\n');

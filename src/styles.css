@@ -166,7 +166,17 @@ body {
   white-space: nowrap;
 }
 
-.principal-selector select {
+.custom-select {
+  position: relative;
+  min-width: 200px;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   padding: 6px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -174,8 +184,101 @@ body {
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
-  min-width: 160px;
   transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.custom-select-trigger:hover {
+  background: var(--surface-hover);
+}
+
+.custom-select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-select-arrow {
+  font-size: 10px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.custom-select.open .custom-select-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  min-width: 240px;
+  max-height: 280px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 500;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-select:not(.open) .custom-select-menu {
+  display: none;
+}
+
+.custom-select.open .custom-select-menu {
+  display: flex;
+}
+
+.custom-select-search {
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  flex-shrink: 0;
+}
+
+.custom-select-search::placeholder {
+  color: var(--text-secondary);
+}
+
+.custom-select-options {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.custom-select-options li {
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.1s;
+}
+
+.custom-select-options li:hover,
+.custom-select-options li.highlighted {
+  background: var(--surface-hover);
+}
+
+.custom-select-options li.selected {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.custom-select-options li.hidden {
+  display: none;
 }
 
 /* ---- Theme toggle ---- */

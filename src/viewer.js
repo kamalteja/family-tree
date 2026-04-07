@@ -1,13 +1,14 @@
 import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 import { computeAllRelationships } from './kinship.js';
-import { decryptFamilyData } from './crypto.js';
+import { decryptFamilyData, decryptToBlob } from './crypto.js';
 
 let chart = null;
 let familyData = [];
 let kinshipRules = {};
 let relationshipLabels = new Map();
 let currentPrincipalId = null;
+const avatarUrlCache = new Map();
 let isFullTreeView = false;
 
 export function getFamilyData() {
@@ -60,6 +61,8 @@ export async function initViewer(password) {
     }
   }
 
+  await decryptAvatars(password);
+
   currentPrincipalId = familyData.length > 0 ? familyData[0].id : null;
 
   populatePrincipalDropdown();
@@ -67,21 +70,116 @@ export async function initViewer(password) {
   createChart();
 }
 
+const MIME_TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
+
+async function decryptAvatars(password) {
+  const avatarFiles = [...new Set(familyData.map(p => p.data.avatar).filter(Boolean))];
+  if (avatarFiles.length === 0) return;
+
+  const pw = password || localStorage.getItem('family-tree-password') || '';
+
+  await Promise.all(avatarFiles.map(async (filename) => {
+    if (avatarUrlCache.has(filename)) return;
+    const ext = filename.split('.').pop().toLowerCase();
+    const mime = MIME_TYPES[ext] || 'application/octet-stream';
+    try {
+      if (import.meta.env.DEV) {
+        const res = await fetch(import.meta.env.BASE_URL + 'avatars/' + filename);
+        if (res.ok && !(res.headers.get('content-type') || '').includes('html')) {
+          avatarUrlCache.set(filename, import.meta.env.BASE_URL + 'avatars/' + filename);
+          return;
+        }
+      }
+      if (!pw) return;
+      const res = await fetch(import.meta.env.BASE_URL + 'avatars/' + filename + '.enc');
+      if (!res.ok) return;
+      const encrypted = await res.text();
+      const blobUrl = await decryptToBlob(encrypted, pw, mime);
+      avatarUrlCache.set(filename, blobUrl);
+    } catch { /* avatar not available */ }
+  }));
+}
+
 function populatePrincipalDropdown() {
-  const dropdown = document.getElementById('principalDropdown');
-  dropdown.innerHTML = '';
+  const container = document.getElementById('principalDropdown');
+  const trigger = document.getElementById('principalTrigger');
+  const valueEl = trigger.querySelector('.custom-select-value');
+  const menu = document.getElementById('principalMenu');
+  const searchInput = document.getElementById('principalSearch');
+  const optionsList = document.getElementById('principalOptions');
 
-  familyData.forEach(person => {
-    const opt = document.createElement('option');
-    opt.value = person.id;
-    opt.textContent = person.data['first name'] + (person.data['last name'] ? ' ' + person.data['last name'] : '');
-    if (person.id === currentPrincipalId) opt.selected = true;
-    dropdown.appendChild(opt);
+  function buildOptions() {
+    optionsList.innerHTML = '';
+    familyData.forEach(person => {
+      const name = person.data['first name'] + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+      const li = document.createElement('li');
+      li.dataset.id = person.id;
+      li.textContent = name;
+      if (person.id === currentPrincipalId) li.classList.add('selected');
+      li.addEventListener('click', () => {
+        changePrincipal(person.id);
+        closeDropdown();
+      });
+      optionsList.appendChild(li);
+    });
+    updateDisplayValue();
+  }
+
+  function updateDisplayValue() {
+    const person = familyData.find(p => p.id === currentPrincipalId);
+    if (person) {
+      valueEl.textContent = person.data['first name'] + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+    }
+    optionsList.querySelectorAll('li').forEach(li => {
+      li.classList.toggle('selected', li.dataset.id === currentPrincipalId);
+    });
+  }
+
+  function openDropdown() {
+    container.classList.add('open');
+    searchInput.value = '';
+    filterOptions('');
+    requestAnimationFrame(() => searchInput.focus());
+  }
+
+  function closeDropdown() {
+    container.classList.remove('open');
+    searchInput.value = '';
+    filterOptions('');
+  }
+
+  function filterOptions(query) {
+    const q = query.toLowerCase();
+    optionsList.querySelectorAll('li').forEach(li => {
+      li.classList.toggle('hidden', q && !li.textContent.toLowerCase().includes(q));
+    });
+  }
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    container.classList.contains('open') ? closeDropdown() : openDropdown();
   });
 
-  dropdown.addEventListener('change', (e) => {
-    changePrincipal(e.target.value);
+  searchInput.addEventListener('input', () => filterOptions(searchInput.value));
+  searchInput.addEventListener('click', (e) => e.stopPropagation());
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDropdown();
+    if (e.key === 'Enter') {
+      const visible = [...optionsList.querySelectorAll('li:not(.hidden)')];
+      if (visible.length === 1) {
+        visible[0].click();
+      }
+    }
   });
+
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) closeDropdown();
+  });
+
+  buildOptions();
+  container._updateValue = updateDisplayValue;
+  container._buildOptions = buildOptions;
 }
 
 function recomputeRelationships() {
@@ -94,7 +192,7 @@ export function changePrincipal(newId) {
   recomputeRelationships();
 
   const dropdown = document.getElementById('principalDropdown');
-  if (dropdown.value !== newId) dropdown.value = newId;
+  if (dropdown._updateValue) dropdown._updateValue();
 
   if (chart) {
     chart.updateMainId(newId);
@@ -174,8 +272,9 @@ function createCardHtml(d) {
   const gender = data.gender === 'M' ? 'male' : 'female';
   const avatarColor = data.gender === 'M' ? 'rgb(120, 159, 172)' : 'rgb(196, 138, 146)';
   const fallbackSvg = `<svg viewBox="0 0 64 64" class="card-avatar"><circle cx="32" cy="24" r="14" fill="${avatarColor}"/><ellipse cx="32" cy="56" rx="22" ry="16" fill="${avatarColor}"/></svg>`;
-  const avatarHtml = data.avatar
-    ? `<img src="${import.meta.env.BASE_URL}avatars/${data.avatar}" alt="${name}" class="card-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span style="display:none">${fallbackSvg}</span>`
+  const avatarSrc = data.avatar && avatarUrlCache.get(data.avatar);
+  const avatarHtml = avatarSrc
+    ? `<img src="${avatarSrc}" alt="${name}" class="card-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span style="display:none">${fallbackSvg}</span>`
     : fallbackSvg;
 
   const birthdayHtml = data.birthday

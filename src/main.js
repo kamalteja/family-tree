@@ -203,10 +203,10 @@ async function tryUnlock(password) {
   localStorage.setItem(PASSWORD_KEY, password);
   showApp();
   initEditor();
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     const chart = getChart();
     if (chart) chart.updateTree({ tree_position: 'fit' });
-  });
+  }, 100);
 }
 
 function initPasswordModal() {
@@ -250,6 +250,10 @@ async function main() {
       await initViewer();
       showApp();
       initEditor();
+      setTimeout(() => {
+        const c = getChart();
+        if (c) c.updateTree({ tree_position: 'fit' });
+      }, 100);
       return;
     } catch { /* family.json missing/invalid, fall through to password flow */ }
   }

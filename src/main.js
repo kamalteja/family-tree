@@ -1,4 +1,4 @@
-import { initViewer, getChart, setFamilyData, getFamilyData } from './viewer.js';
+import { loadData, renderChart, getChart, setFamilyData, getFamilyData } from './viewer.js';
 import { initEditor } from './editor.js';
 import { computeDiff } from './diff.js';
 import { decryptFamilyData } from './crypto.js';
@@ -176,6 +176,8 @@ function initInfoModal() {
 function showApp() {
   document.getElementById('passwordModal').style.display = 'none';
   document.getElementById('app').style.display = '';
+  const toolbar = document.getElementById('toolbar');
+  document.documentElement.style.setProperty('--toolbar-height', toolbar.offsetHeight + 'px');
 }
 
 function lockApp() {
@@ -202,14 +204,11 @@ function initLockButton() {
 }
 
 async function tryUnlock(password) {
-  await initViewer(password);
+  await loadData(password);
   localStorage.setItem(PASSWORD_KEY, password);
   showApp();
+  renderChart();
   initEditor();
-  setTimeout(() => {
-    const chart = getChart();
-    if (chart) chart.updateTree({ tree_position: 'fit' });
-  }, 100);
 }
 
 function initPasswordModal() {
@@ -241,6 +240,9 @@ function initPasswordModal() {
 }
 
 async function main() {
+  const homeLink = document.getElementById('appHomeLink');
+  if (homeLink) homeLink.href = import.meta.env.BASE_URL;
+
   initTheme();
   initResetButton();
   initJsonEditor();
@@ -250,13 +252,10 @@ async function main() {
 
   if (import.meta.env.DEV) {
     try {
-      await initViewer();
+      await loadData();
       showApp();
+      renderChart();
       initEditor();
-      setTimeout(() => {
-        const c = getChart();
-        if (c) c.updateTree({ tree_position: 'fit' });
-      }, 100);
       return;
     } catch { /* family.json missing/invalid, fall through to password flow */ }
   }

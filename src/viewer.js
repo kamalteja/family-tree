@@ -43,7 +43,7 @@ async function loadDataFile(name, password) {
   return JSON.parse(decrypted);
 }
 
-export async function initViewer(password) {
+export async function loadData(password) {
   const [rawFamilyData, rulesRes] = await Promise.all([
     loadDataFile('family', password),
     loadDataFile('kinship-rules', password),
@@ -63,11 +63,19 @@ export async function initViewer(password) {
 
   await decryptAvatars(password);
 
-  currentPrincipalId = familyData.length > 0 ? familyData[0].id : null;
+  const cachedPrincipal = localStorage.getItem('family-tree-principal');
+  if (cachedPrincipal && familyData.some(p => p.id === cachedPrincipal)) {
+    currentPrincipalId = cachedPrincipal;
+  } else {
+    currentPrincipalId = familyData.length > 0 ? familyData[0].id : null;
+  }
 
   updateMemberCount();
   populatePrincipalDropdown();
   recomputeRelationships();
+}
+
+export function renderChart() {
   createChart();
 }
 
@@ -195,6 +203,7 @@ function recomputeRelationships() {
 
 export function changePrincipal(newId) {
   currentPrincipalId = newId;
+  localStorage.setItem('family-tree-principal', newId);
   recomputeRelationships();
 
   const dropdown = document.getElementById('principalDropdown');

@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Family Tree</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/styles.css" />
 </head>
 <body>
@@ -19,9 +22,9 @@
 
   <div id="app" style="display:none;">
     <header id="toolbar">
+      <h1 class="app-title">Family Tree</h1>
       <div class="toolbar-left">
-        <img src="/tree-icon.svg" alt="" class="app-logo" />
-        <h1 class="app-title">Family Tree</h1>
+        <a href="" id="appHomeLink"><img src="/tree-icon.svg" alt="" class="app-logo" /></a>
         <div class="principal-selector" id="principalSelector">
           <label>Principal Person:</label>
           <div class="custom-select" id="principalDropdown">

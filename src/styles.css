@@ -134,6 +134,7 @@ body {
   z-index: 100;
   flex-shrink: 0;
   transition: background 0.3s, border-color 0.3s;
+  position: relative;
 }
 
 .toolbar-left {
@@ -148,6 +149,14 @@ body {
   gap: 8px;
 }
 
+.app-home-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
 .app-logo {
   height: 48px;
   flex-shrink: 0;
@@ -157,9 +166,14 @@ body {
 }
 
 .app-title {
-  font-size: 18px;
-  font-weight: 600;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Pacifico', cursive;
+  font-size: 34px;
+  font-weight: 400;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .member-count {
@@ -586,7 +600,7 @@ body {
 
 #editorPanel {
   position: fixed;
-  top: 53px;
+  top: var(--toolbar-height, 53px);
   right: 0;
   bottom: 0;
   width: 340px;

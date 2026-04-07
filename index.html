@@ -7,7 +7,17 @@
   <link rel="stylesheet" href="/src/styles.css" />
 </head>
 <body>
-  <div id="app">
+  <div id="passwordModal" class="password-modal">
+    <div class="password-modal-content">
+      <h2>Family Tree</h2>
+      <p>Enter the password to view family data.</p>
+      <input type="password" id="passwordInput" placeholder="Password" autocomplete="off" />
+      <div id="passwordError" class="password-error"></div>
+      <button id="passwordSubmit" class="btn btn-primary">Unlock</button>
+    </div>
+  </div>
+
+  <div id="app" style="display:none;">
     <header id="toolbar">
       <div class="toolbar-left">
         <h1 class="app-title">Family Tree</h1>
@@ -24,6 +34,7 @@
         <button id="exportBtn" class="btn btn-secondary" style="display:none;">Export JSON</button>
         <button id="resetDataBtn" class="theme-toggle" title="Reset to original data">&#8635;</button>
         <button id="editJsonBtn" class="theme-toggle" title="Edit raw JSON data">{ }</button>
+        <button id="lockBtn" class="theme-toggle" title="Lock and clear decrypted data">&#128274;</button>
         <button id="themeToggle" class="theme-toggle" title="Toggle light/dark mode">&#9790;</button>
         <button id="infoBtn" class="theme-toggle" title="How it works">&#8505;</button>
       </div>
@@ -72,6 +83,7 @@
             <li><strong>&#8982;</strong> — Reset the view: centers and zooms the tree to fit the screen.</li>
             <li><strong>&#8635;</strong> — Reset data: discards all localStorage edits and reloads the original family.json.</li>
             <li><strong>{ }</strong> — Edit raw JSON: opens a diff viewer showing your changes vs. the original file. Switch to edit mode to modify the JSON directly.</li>
+            <li><strong>&#128274;</strong> — Lock: clears the decrypted data and cached password, returning to the password prompt.</li>
             <li><strong>&#9790; / &#9788;</strong> — Toggle between dark and light mode.</li>
             <li><strong>&#8505;</strong> — Open this info panel.</li>
           </ul>

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "encrypt": "node scripts/encrypt.js"
   },
   "dependencies": {
     "family-chart": "^0.9.0",

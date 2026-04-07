@@ -24,6 +24,30 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Verify public/data contains only encrypted files
+        run: |
+          manifest="public/data/.manifest"
+          if [ ! -f "$manifest" ]; then
+            echo "::error::Missing $manifest — run npm run encrypt"; exit 1
+          fi
+          for f in public/data/*; do
+            [ -f "$f" ] || continue
+            name=$(basename "$f")
+            if [[ "$name" == ".manifest" ]]; then continue; fi
+            if [[ "$f" != *.enc ]]; then
+              echo "::error::Non-.enc file found: $f"; exit 1
+            fi
+            expected=$(python3 -c "import json; print(json.load(open('$manifest')).get('$name',''))")
+            if [ -z "$expected" ]; then
+              echo "::error::$name not in manifest — run npm run encrypt"; exit 1
+            fi
+            actual=$(sha256sum "$f" | cut -d' ' -f1)
+            if [ "$actual" != "$expected" ]; then
+              echo "::error::$name checksum mismatch — file was not produced by npm run encrypt"; exit 1
+            fi
+            echo "✓ $name"
+          done
+
       - run: npm ci --loglevel info
       - run: npm run build
 

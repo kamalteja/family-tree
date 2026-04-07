@@ -11,6 +11,10 @@ export function initEditor() {
   document.getElementById('personForm').addEventListener('submit', handleSave);
   document.getElementById('deletePersonBtn').addEventListener('click', handleDelete);
   document.getElementById('exportBtn').addEventListener('click', exportJson);
+  document.getElementById('qualityBtn').addEventListener('click', toggleQualityPanel);
+  document.getElementById('closeQualityBtn').addEventListener('click', () => {
+    document.getElementById('qualityPanel').style.display = 'none';
+  });
 }
 
 function enterEditMode() {
@@ -25,6 +29,7 @@ function enterEditMode() {
 
 function exitEditMode() {
   document.getElementById('editorPanel').style.display = 'none';
+  document.getElementById('qualityPanel').style.display = 'none';
   document.getElementById('editModeBtn').style.display = 'inline-block';
   document.getElementById('viewModeBtn').style.display = 'none';
   document.getElementById('exportBtn').style.display = 'none';
@@ -45,7 +50,6 @@ function renderPersonList() {
     const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
     item.innerHTML = `
       <span class="person-list-name">${name}</span>
-      <span class="person-list-id">(${person.id})</span>
       <button class="btn btn-small btn-secondary" data-id="${person.id}">Edit</button>
     `;
     item.querySelector('button').addEventListener('click', () => showEditForm(person.id));
@@ -328,4 +332,54 @@ function exportJson() {
     a.click();
     URL.revokeObjectURL(url);
   };
+}
+
+const ALL_FIELDS = ['first name', 'last name', 'gender', 'birthday', 'avatar'];
+
+function scanMissingAttributes() {
+  const data = getFamilyData();
+  const results = [];
+  for (const person of data) {
+    const missing = ALL_FIELDS.filter(f => !person.data[f] || !String(person.data[f]).trim());
+    if (missing.length > 0) {
+      const name = (person.data['first name'] || '').trim() + ' ' + (person.data['last name'] || '').trim();
+      results.push({ id: person.id, name: name.trim() || person.id, missing });
+    }
+  }
+  return results;
+}
+
+function renderQualityPanel() {
+  const list = document.getElementById('qualityList');
+  const issues = scanMissingAttributes();
+
+  if (issues.length === 0) {
+    list.innerHTML = '<p class="quality-summary">All members have complete data.</p>';
+    return;
+  }
+
+  list.innerHTML = `<p class="quality-summary">${issues.length} member${issues.length > 1 ? 's' : ''} with missing data</p>`;
+  for (const item of issues) {
+    const row = document.createElement('div');
+    row.className = 'quality-item';
+    row.innerHTML = `
+      <div>
+        <div class="quality-item-name">${item.name}</div>
+        <div class="quality-item-tags">
+          ${item.missing.map(f => `<span class="quality-tag">${f}</span>`).join('')}
+        </div>
+      </div>`;
+    row.addEventListener('click', () => showEditForm(item.id));
+    list.appendChild(row);
+  }
+}
+
+function toggleQualityPanel() {
+  const panel = document.getElementById('qualityPanel');
+  if (panel.style.display === 'none' || !panel.style.display) {
+    renderQualityPanel();
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
 }

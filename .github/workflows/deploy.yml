@@ -1,10 +1,8 @@
-name: Deploy to GitHub Pages
+name: Build & Deploy
 
 on:
-  workflow_run:
-    workflows: [npm build]
-    types: [completed]
-    branches: [main]
+  push:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,23 +14,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    if: github.event.workflow_run.conclusion == 'success'
+  npm-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci --loglevel verbose
+      - run: npm run build -- --debug
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  deploy-to-github-pages:
+    needs: npm-build
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: dist
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
       - id: deployment
         uses: actions/deploy-pages@v4

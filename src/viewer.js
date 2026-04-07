@@ -272,9 +272,13 @@ function traceEnter(datum) {
     if (d && pathSet.has(d.data.id)) {
       const inner = el.querySelector('.card-inner');
       if (inner) {
+        const isEndpoint = d.data.id === personId || d.data.id === currentPrincipalId;
         const delay = Math.abs(datum.depth - d.depth) * 200;
         setTimeout(() => {
-          if (traceHoverId === personId) inner.classList.add('f3-path-to-main');
+          if (traceHoverId === personId) {
+            inner.classList.add('f3-path-to-main');
+            if (isEndpoint) inner.classList.add('f3-trace-endpoint');
+          }
         }, delay);
       }
     }
@@ -307,6 +311,7 @@ function traceLeave() {
   const container = document.getElementById('FamilyChart');
   container.querySelectorAll('.f3-path-to-main').forEach(el => {
     el.classList.remove('f3-path-to-main');
+    el.classList.remove('f3-trace-endpoint');
   });
 }
 

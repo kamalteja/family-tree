@@ -78,8 +78,8 @@
   --shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   --radius: 8px;
   --card-bg: #2a2a2a;
-  --card-principal-bg: #3d3a20;
-  --card-principal-border: #d4c84e;
+  --card-principal-bg: #4a4520;
+  --card-principal-border: #e8d54e;
 }
 
 [data-theme="light"] {
@@ -95,7 +95,7 @@
   --border: #ddd;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   --card-bg: #ffffff;
-  --card-principal-bg: #fdf6d0;
+  --card-principal-bg: #fdf0b0;
   --card-principal-border: #b8a829;
 }
 
@@ -139,13 +139,21 @@ body {
 .toolbar-left {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 10px;
 }
 
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.app-logo {
+  height: 48px;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .app-logo {
+  filter: brightness(0) invert(1);
 }
 
 .app-title {
@@ -410,8 +418,15 @@ body {
 }
 
 .f3 .link.f3-path-to-main {
-  stroke: var(--primary);
-  stroke-width: 3px;
+  stroke: #fbbf24;
+  stroke-width: 4px;
+}
+
+.f3 div.card-inner.f3-path-to-main {
+  outline: 4px solid rgba(136, 136, 136, 0.8) !important;
+}
+.f3 div.card-inner.f3-trace-endpoint {
+  outline: 4px solid rgba(255, 255, 255, 1) !important;
 }
 
 [data-theme="light"] .f3 {
@@ -429,6 +444,7 @@ body {
   stroke-width: 3px;
 }
 
+
 /* ---- Card styles ---- */
 
 .card-inner {
@@ -439,22 +455,38 @@ body {
   border: 2px solid var(--border);
   overflow: hidden;
   height: 100%;
-  transition: border-color 0.2s, background 0.3s;
+  transition: border-color 0.2s, background 0.3s, box-shadow 0.2s;
   color: var(--text);
+}
+
+.card-inner:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+[data-theme="dark"] .card-inner:hover {
+  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.1);
 }
 
 .card-inner[data-gender="male"] {
   border-left: 4px solid rgb(120, 159, 172);
 }
+[data-theme="dark"] .card-inner[data-gender="male"] {
+  border-left: 4px solid rgb(160, 200, 215);
+}
 
 .card-inner[data-gender="female"] {
   border-left: 4px solid rgb(196, 138, 146);
 }
+[data-theme="dark"] .card-inner[data-gender="female"] {
+  border-left: 4px solid rgb(225, 170, 180);
+}
 
 .card-inner.card-principal {
-  border-color: var(--card-principal-border);
+  border: 3px solid var(--card-principal-border);
   background: var(--card-principal-bg);
-  box-shadow: 0 0 0 2px rgba(212, 200, 78, 0.35);
+  box-shadow: 0 0 10px 3px rgba(232, 213, 78, 0.4);
+}
+[data-theme="light"] .card-inner.card-principal {
+  box-shadow: 0 0 8px 2px rgba(184, 168, 41, 0.35);
 }
 
 .card-avatar-wrap {
@@ -471,6 +503,22 @@ body {
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+}
+.card-inner[data-gender="male"] .card-avatar circle,
+.card-inner[data-gender="male"] .card-avatar ellipse {
+  fill: rgb(120, 159, 172);
+}
+.card-inner[data-gender="female"] .card-avatar circle,
+.card-inner[data-gender="female"] .card-avatar ellipse {
+  fill: rgb(196, 138, 146);
+}
+[data-theme="dark"] .card-inner[data-gender="male"] .card-avatar circle,
+[data-theme="dark"] .card-inner[data-gender="male"] .card-avatar ellipse {
+  fill: rgb(160, 200, 215);
+}
+[data-theme="dark"] .card-inner[data-gender="female"] .card-avatar circle,
+[data-theme="dark"] .card-inner[data-gender="female"] .card-avatar ellipse {
+  fill: rgb(225, 170, 180);
 }
 
 .card-info {

@@ -2,6 +2,7 @@ import { initViewer, getChart, setFamilyData, getFamilyData } from './viewer.js'
 import { initEditor } from './editor.js';
 import { computeDiff } from './diff.js';
 import { decryptFamilyData } from './crypto.js';
+import { confirmModal } from './ui.js';
 import './styles.css';
 
 const PASSWORD_KEY = 'family-tree-password';
@@ -28,8 +29,9 @@ function updateThemeIcon(theme) {
 }
 
 function initResetButton() {
-  document.getElementById('resetDataBtn').addEventListener('click', () => {
-    if (!confirm('Reset to the original family.json data? This will clear all localStorage edits.')) return;
+  document.getElementById('resetDataBtn').addEventListener('click', async () => {
+    const ok = await confirmModal('Reset data', 'Reset to the original data? This will clear all localStorage edits.');
+    if (!ok) return;
     localStorage.removeItem('family-tree-data');
     location.reload();
   });
@@ -190,9 +192,10 @@ function lockApp() {
 }
 
 function initLockButton() {
-  document.getElementById('lockBtn').addEventListener('click', () => {
+  document.getElementById('lockBtn').addEventListener('click', async () => {
     if (localStorage.getItem('family-tree-data')) {
-      if (!confirm('You have local edits that haven\'t been exported. Locking will discard them. Continue?')) return;
+      const ok = await confirmModal('Lock with unsaved edits', 'You have local edits that haven\'t been exported. Locking will discard them. Continue?');
+      if (!ok) return;
     }
     lockApp();
   });

@@ -1,4 +1,5 @@
 import { getFamilyData, setFamilyData, refreshViewer } from './viewer.js';
+import { confirmModal, showToast } from './ui.js';
 
 let editingPersonId = null;
 
@@ -237,9 +238,10 @@ function syncBidirectionalRels(data, personId, oldParents, newParents, oldSpouse
   });
 }
 
-function handleDelete() {
+async function handleDelete() {
   if (!editingPersonId) return;
-  if (!confirm('Are you sure you want to delete this person?')) return;
+  const ok = await confirmModal('Delete person', 'Are you sure you want to delete this person? This cannot be undone.');
+  if (!ok) return;
 
   let data = getFamilyData();
   const person = data.find(p => p.id === editingPersonId);
@@ -312,10 +314,9 @@ function exportJson() {
   modal.onclick = (e) => { if (e.target === modal) close(); };
 
   copyBtn.onclick = () => {
-    navigator.clipboard.writeText(json).then(() => {
-      copyBtn.textContent = 'Copied!';
-      setTimeout(() => { copyBtn.textContent = 'Copy to Clipboard'; }, 2000);
-    });
+    navigator.clipboard.writeText(json)
+      .then(() => showToast('Copied to clipboard'))
+      .catch(() => showToast('Failed to copy to clipboard', 'error'));
   };
 
   downloadBtn.onclick = () => {

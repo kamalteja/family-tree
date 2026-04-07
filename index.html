@@ -34,8 +34,10 @@
             </div>
           </div>
         </div>
+        <span id="memberCount" class="member-count"></span>
       </div>
       <div class="toolbar-right">
+        <button id="searchBtn" class="btn btn-secondary" title="Search for a person (Ctrl+F)">&#128269;</button>
         <button id="fitViewBtn" class="btn btn-secondary" title="Center and fit tree to screen">&#8982;</button>
         <button id="toggleViewBtn" class="btn btn-secondary" style="display:none;">Show Full Tree</button>
         <button id="editModeBtn" class="btn btn-primary">Edit</button>
@@ -101,6 +103,10 @@
     </header>
 
     <main id="viewerMode">
+      <div id="searchPanel" class="search-panel" style="display:none;">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name..." autocomplete="off" />
+        <ul id="searchResults" class="search-results"></ul>
+      </div>
       <div id="FamilyChart" class="f3 f3-cont"></div>
     </main>
 
@@ -151,6 +157,19 @@
       <div id="personList"></div>
     </aside>
   </div>
+
+  <div id="confirmModal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal-content">
+      <h3 id="confirmTitle"></h3>
+      <p id="confirmMessage"></p>
+      <div class="confirm-actions">
+        <button id="confirmOkBtn" class="btn btn-danger">Confirm</button>
+        <button id="confirmCancelBtn" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

@@ -65,9 +65,15 @@ export async function initViewer(password) {
 
   currentPrincipalId = familyData.length > 0 ? familyData[0].id : null;
 
+  updateMemberCount();
   populatePrincipalDropdown();
   recomputeRelationships();
   createChart();
+}
+
+function updateMemberCount() {
+  const el = document.getElementById('memberCount');
+  if (el) el.innerHTML = `Total members: <strong>${familyData.length}</strong>`;
 }
 
 const MIME_TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' };
@@ -197,11 +203,111 @@ export function changePrincipal(newId) {
   if (chart) {
     chart.updateMainId(newId);
     chart.updateTree({ tree_position: 'main_to_middle' });
-    refreshCardLabels();
   }
 
   isFullTreeView = false;
   updateToggleButton();
+}
+
+function buildFamilyGraph() {
+  const graph = new Map();
+  familyData.forEach(p => {
+    if (!graph.has(p.id)) graph.set(p.id, new Set());
+    for (const rel of ['parents', 'spouses', 'children']) {
+      (p.rels[rel] || []).forEach(rid => {
+        if (!graph.has(rid)) graph.set(rid, new Set());
+        graph.get(p.id).add(rid);
+        graph.get(rid).add(p.id);
+      });
+    }
+  });
+  return graph;
+}
+
+function findPathBFS(fromId, toId) {
+  if (fromId === toId) return [fromId];
+  const graph = buildFamilyGraph();
+  const visited = new Set([fromId]);
+  const queue = [[fromId]];
+  while (queue.length > 0) {
+    const path = queue.shift();
+    const current = path[path.length - 1];
+    for (const neighbor of (graph.get(current) || [])) {
+      if (neighbor === toId) return [...path, neighbor];
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([...path, neighbor]);
+      }
+    }
+  }
+  return null;
+}
+
+let traceHoverId = null;
+
+function traceEnter(datum) {
+  const personId = datum.data.id;
+  traceHoverId = personId;
+  if (!currentPrincipalId || personId === currentPrincipalId) return;
+
+  const path = findPathBFS(personId, currentPrincipalId);
+  if (!path) return;
+  const pathSet = new Set(path);
+  const container = document.getElementById('FamilyChart');
+
+  container.querySelectorAll('svg.main_svg .links_view .link').forEach(el => {
+    const d = el.__data__;
+    if (!d || d.spouse) return;
+    if (Array.isArray(d.source)) {
+      if (pathSet.has(d.target?.data?.id) && d.source.some(s => pathSet.has(s?.data?.id)))
+        d.source.forEach(s => { if (s?.data?.id) pathSet.add(s.data.id); });
+    } else if (Array.isArray(d.target)) {
+      if (pathSet.has(d.source?.data?.id) && d.target.some(t => pathSet.has(t?.data?.id)))
+        d.target.forEach(t => { if (t?.data?.id) pathSet.add(t.data.id); });
+    }
+  });
+
+  container.querySelectorAll('#htmlSvg .cards_view .card_cont').forEach(el => {
+    const d = el.__data__;
+    if (d && pathSet.has(d.data.id)) {
+      const inner = el.querySelector('.card-inner');
+      if (inner) {
+        const delay = Math.abs(datum.depth - d.depth) * 200;
+        setTimeout(() => {
+          if (traceHoverId === personId) inner.classList.add('f3-path-to-main');
+        }, delay);
+      }
+    }
+  });
+
+  container.querySelectorAll('svg.main_svg .links_view .link').forEach(el => {
+    const d = el.__data__;
+    if (!d) return;
+    let match = false;
+
+    if (d.spouse) {
+      match = pathSet.has(d.source?.data?.id) && pathSet.has(d.target?.data?.id);
+    } else if (Array.isArray(d.source)) {
+      match = pathSet.has(d.target?.data?.id) && d.source.some(s => pathSet.has(s?.data?.id));
+    } else if (Array.isArray(d.target)) {
+      match = pathSet.has(d.source?.data?.id) && d.target.some(t => pathSet.has(t?.data?.id));
+    }
+
+    if (match) {
+      const delay = Math.abs(datum.depth - (d.depth || 0)) * 200;
+      setTimeout(() => {
+        if (traceHoverId === personId) el.classList.add('f3-path-to-main');
+      }, delay);
+    }
+  });
+}
+
+function traceLeave() {
+  traceHoverId = null;
+  const container = document.getElementById('FamilyChart');
+  container.querySelectorAll('.f3-path-to-main').forEach(el => {
+    el.classList.remove('f3-path-to-main');
+  });
 }
 
 function createChart() {
@@ -210,10 +316,10 @@ function createChart() {
 
   chart = f3.createChart(container, familyData);
 
-  chart.setCardHtml()
+  const cardInst = chart.setCardHtml();
+  cardInst
     .setCardInnerHtmlCreator(createCardHtml)
     .setStyle('default')
-    .setOnHoverPathToMain()
     .setCardDim({
       w: 220,
       h: 100,
@@ -224,6 +330,9 @@ function createChart() {
       img_x: 5,
       img_y: 15,
     });
+
+  cardInst.onCardMouseenter = (_e, datum) => traceEnter(datum);
+  cardInst.onCardMouseleave = () => traceLeave();
 
   chart
     .setCardXSpacing(320)
@@ -239,6 +348,7 @@ function createChart() {
 
   setupToggleButton();
   setupFitButton();
+  setupSearch();
 }
 
 function formatBirthday(dateStr) {
@@ -281,7 +391,7 @@ function createCardHtml(d) {
     ? `<div class="card-birthday">${formatBirthday(data.birthday)}</div>`
     : '';
 
-  return `<div class="card-inner${highlightClass}" data-gender="${gender}">
+  return `<div class="card-inner${highlightClass}" data-gender="${gender}" data-person-id="${personId}">
     <div class="card-avatar-wrap">${avatarHtml}</div>
     <div class="card-info">
       <div class="card-name">${name}</div>
@@ -289,19 +399,6 @@ function createCardHtml(d) {
       ${relationHtml}
     </div>
   </div>`;
-}
-
-function refreshCardLabels() {
-  const container = document.getElementById('FamilyChart');
-  const cards = container.querySelectorAll('.card-inner');
-  cards.forEach(card => {
-    // Cards are re-rendered by the library on updateTree,
-    // so we rely on createCardHtml being called again.
-  });
-  // Force re-render
-  if (chart) {
-    chart.updateTree({ tree_position: 'main_to_middle' });
-  }
 }
 
 function setupFitButton() {
@@ -323,9 +420,9 @@ function updateToggleButton() {
   btn.textContent = isFullTreeView ? 'Show Principal Root' : 'Show Full Tree';
 }
 
-function findRootAncestor() {
+function findRootOf(startId) {
   const personMap = new Map(familyData.map(p => [p.id, p]));
-  let current = currentPrincipalId;
+  let current = startId;
   const visited = new Set();
 
   while (current && !visited.has(current)) {
@@ -337,7 +434,11 @@ function findRootAncestor() {
     current = person.rels.parents[0];
   }
 
-  return currentPrincipalId;
+  return startId;
+}
+
+function findRootAncestor() {
+  return findRootOf(currentPrincipalId);
 }
 
 function toggleFullTree() {
@@ -356,8 +457,191 @@ function toggleFullTree() {
   }
 }
 
+function setupSearch() {
+  const btn = document.getElementById('searchBtn');
+  const panel = document.getElementById('searchPanel');
+  const input = document.getElementById('searchInput');
+  const results = document.getElementById('searchResults');
+
+  function open() {
+    panel.style.display = '';
+    input.value = '';
+    results.innerHTML = '';
+    results.classList.remove('has-results');
+    requestAnimationFrame(() => input.focus());
+  }
+
+  function close() {
+    panel.style.display = 'none';
+    input.value = '';
+    results.innerHTML = '';
+    results.classList.remove('has-results');
+  }
+
+  function search(query) {
+    const q = query.toLowerCase().trim();
+    results.innerHTML = '';
+    if (!q) { results.classList.remove('has-results'); return; }
+
+    const matches = familyData.filter(p => {
+      const name = (p.data['first name'] || '') + ' ' + (p.data['last name'] || '');
+      return name.toLowerCase().includes(q);
+    }).slice(0, 10);
+
+    if (matches.length === 0) { results.classList.remove('has-results'); return; }
+
+    matches.forEach(person => {
+      const name = person.data['first name'] + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+      const labels = relationshipLabels.get(person.id);
+      const li = document.createElement('li');
+      li.innerHTML = name + (labels ? `<span class="search-result-relation">${labels.te}</span>` : '');
+      li.addEventListener('click', () => {
+        close();
+        panToCard(person.id);
+      });
+      results.appendChild(li);
+    });
+    results.classList.add('has-results');
+  }
+
+  btn.addEventListener('click', () => {
+    panel.style.display === 'none' ? open() : close();
+  });
+
+  input.addEventListener('input', () => search(input.value));
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+    if (e.key === 'Enter') {
+      const first = results.querySelector('li');
+      if (first) first.click();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  document.getElementById('FamilyChart').addEventListener('click', () => {
+    if (panel.style.display !== 'none') close();
+  });
+}
+
+function panToCard(personId) {
+  const container = document.getElementById('FamilyChart');
+  const card = container.querySelector(`.card-inner[data-person-id="${personId}"]`);
+
+  if (card) {
+    smoothPanTo(card);
+    highlightCard(personId);
+    return;
+  }
+
+  if (!isFullTreeView) {
+    isFullTreeView = true;
+    updateToggleButton();
+  }
+
+  const targetRoot = findRootOf(personId);
+  chart.updateMainId(targetRoot);
+  chart.updateTree({ tree_position: 'fit' });
+
+  setTimeout(() => {
+    const found = container.querySelector(`.card-inner[data-person-id="${personId}"]`);
+    if (found) {
+      smoothPanTo(found);
+      highlightCard(personId);
+    } else {
+      chart.updateMainId(personId);
+      chart.updateTree({ tree_position: 'main_to_middle' });
+      setTimeout(() => highlightCard(personId), 900);
+    }
+  }, 1000);
+}
+
+function smoothPanTo(card) {
+  const container = document.getElementById('FamilyChart');
+  const svg = container.querySelector('svg');
+  const svgView = svg.querySelector('.view');
+  const htmlView = container.querySelector('#htmlSvg .cards_view');
+
+  const cardCont = card.closest('.card_cont');
+  if (!cardCont) return;
+
+  const style = cardCont.style.transform || getComputedStyle(cardCont).transform;
+  let cx, cy;
+  const txMatch = style.match(/translate\(([-\d.e]+)px,?\s*([-\d.e]+)px\)/);
+  if (txMatch) {
+    cx = parseFloat(txMatch[1]);
+    cy = parseFloat(txMatch[2]);
+  } else {
+    const mMatch = style.match(/matrix\(([^)]+)\)/);
+    if (!mMatch) return;
+    const parts = mMatch[1].split(',').map(Number);
+    cx = parts[4];
+    cy = parts[5];
+  }
+
+  cx += 110;
+  cy += 50;
+
+  const zoomListener = svg.__zoomObj ? svg : svg.parentNode;
+  let fromK = 1, fromX = 0, fromY = 0;
+  if (zoomListener?.__zoom) {
+    fromK = zoomListener.__zoom.k;
+    fromX = zoomListener.__zoom.x;
+    fromY = zoomListener.__zoom.y;
+  }
+
+  const toK = Math.max(fromK, 1);
+  const rect = container.getBoundingClientRect();
+  const toX = rect.width / 2 - cx * toK;
+  const toY = rect.height / 2 - cy * toK;
+
+  const duration = 600;
+  const startTime = performance.now();
+
+  function frame(now) {
+    const t = Math.min((now - startTime) / duration, 1);
+    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    const curK = fromK + (toK - fromK) * ease;
+    const x = fromX + (toX - fromX) * ease;
+    const y = fromY + (toY - fromY) * ease;
+    const css = `translate(${x}px, ${y}px) scale(${curK})`;
+    svgView.style.transform = css;
+    htmlView.style.transform = css;
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else if (zoomListener?.__zoom) {
+      const proto = Object.getPrototypeOf(zoomListener.__zoom);
+      const synced = Object.create(proto);
+      synced.k = toK;
+      synced.x = toX;
+      synced.y = toY;
+      zoomListener.__zoom = synced;
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function highlightCard(personId) {
+  const container = document.getElementById('FamilyChart');
+  const card = container.querySelector(`.card-inner[data-person-id="${personId}"]`);
+  if (!card) return;
+  card.classList.remove('card-highlight');
+  void card.offsetWidth;
+  card.classList.add('card-highlight');
+  card.addEventListener('animationend', () => card.classList.remove('card-highlight'), { once: true });
+}
+
 export function refreshViewer() {
   recomputeRelationships();
+  updateMemberCount();
   if (chart) {
     chart.updateData(familyData);
     chart.updateMainId(currentPrincipalId);

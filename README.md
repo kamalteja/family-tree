@@ -6,18 +6,25 @@ Deployed to GitHub Pages as a fully static site — no backend required. All dat
 
 ## Features
 
-- **Dynamic Telugu & English relationship labels** — computed relative to whichever person you select as principal (e.g. anna, mamayya, attaiah, peddamma, bava, maridhi, ...)
+- **Dynamic Telugu relationship labels** — computed relative to whichever person you select as principal (e.g. anna, mamayya, attaiah, peddamma, bava, maridhi, ...)
+- **Kinship traversal path** — each card shows the Telugu derivation path below the relationship name (e.g. `nenu ›parent› nanna ›sibling› anna`)
+- **State equivalences** — compound kinship states (e.g. peddananna) inherit transitions from their base state (e.g. nanna), reducing the number of explicit rules needed
 - **Two views** — *Principal View* (centered on one person) and *Full Tree* (expands to the oldest ancestor in that lineage)
-- **Interactive visualization** — zoom, pan, hover-to-trace parent lines, powered by [family-chart](https://github.com/nicehero/family-chart)
+- **Hidden relatives indicator** — nodes with relatives not shown in the current view display a mini-tree marker
+- **Interactive visualization** — zoom, pan, hover-to-trace path to principal, powered by [family-chart](https://github.com/nicehero/family-chart)
+- **Search** — floating search bar to find and navigate to any person in the tree
+- **Member count** — total family members displayed in the toolbar
 - **Dark / light theme** toggle
 - **In-browser editor** — add, edit, and delete family members with bidirectional relationship syncing
+- **Data quality panel** — highlights people with missing attributes (name, gender, birthday) alongside the editor
 - **JSON diff viewer** — inline green/red diff view for inspecting changes before saving
 - **Export / Import** — copy or download the current family data as JSON; edit raw JSON directly in a modal
-- **localStorage persistence** — editor changes survive page reloads; reset button to revert to the original data
+- **localStorage persistence** — editor changes survive page reloads; principal person selection is cached across sessions
 - **Avatars** — person photos stored encrypted alongside the data
 - **Encryption** — all data files and avatars are encrypted with AES-256-GCM (PBKDF2 key derivation); the browser prompts for a password on load
 - **Lock** — clear decrypted data and cached password from the browser with one click
 - **Searchable principal dropdown** — custom themed dropdown with type-to-search filtering
+- **Themed UI** — custom confirmation modals and toast notifications (no native browser dialogs)
 
 ## Project structure
 
@@ -147,21 +154,23 @@ Array of person objects:
 
 Defines the state machine for relationship resolution:
 
-- **`states`** — each state has an English and Telugu label (e.g. `"mamayya": { "en": "father-in-law", "te": "mamayya" }`)
+- **`states`** — each state has Telugu and English labels (e.g. `"mamayya": { "te": "mamayya", "en": "father-in-law" }`)
+- **`equivalences`** — maps compound states to their base state for transition inheritance (e.g. `"peddananna": "nanna"` means peddananna inherits nanna's transitions when no explicit rule exists). The resolver follows the equivalence chain up to `MAX_EQUIVALENCE_DEPTH` (5) levels deep.
 - **`transitions`** — rules of the form `{ from, hop, gender, age, to }` where:
   - `hop` is `"parent"`, `"child"`, `"spouse"`, or `"sibling"`
   - `gender` is `"M"` or `"F"`
   - `age` is `"elder"`, `"younger"`, or `null` (any)
 
-The engine walks BFS shortest paths, normalises sibling patterns (`parent→child` to `sibling`), and resolves each hop through the state machine. When no transition matches, a fallback label is composed (e.g. "mamayya brother").
+The engine walks BFS shortest paths, normalises sibling patterns (`parent→child` to `sibling`), and resolves each hop through the state machine. When no direct transition matches, the equivalence chain is consulted. If that also fails, a fallback label is composed (e.g. "mamayya brother").
 
 ### Adding new kinship rules
 
 To teach the engine a new relationship:
 
-1. Add a **state** entry with the English and Telugu terms.
+1. Add a **state** entry with the Telugu and English terms.
 2. Add one or more **transition** rules specifying how to reach that state from an existing one.
-3. Re-encrypt (`npm run encrypt`) and refresh — no code changes needed.
+3. Optionally, add an **equivalence** entry if the new state should inherit transitions from an existing base state (e.g. a new uncle-type state equivalent to `nanna`).
+4. Re-encrypt (`npm run encrypt`) and refresh — no code changes needed.
 
 ## Avatars
 
@@ -171,10 +180,11 @@ Place image files (PNG, JPG, WebP, GIF) in `public/avatars/`. Set the `avatar` f
 
 1. Click **Edit** in the toolbar to open the side panel.
 2. Add or edit people using the form; changes are saved to **localStorage** automatically.
-3. Use **Export JSON** to copy or download the current data.
-4. Use the **{ }** button to view a diff of your changes vs. the original file, or edit raw JSON directly.
-5. Use the **reset** button to discard all localStorage changes and reload from the original encrypted data.
-6. Use the **lock** button to clear decrypted data and the cached password, returning to the password prompt. If you have unsaved edits, you'll be asked to confirm.
+3. Click **Data Quality** to open a companion panel listing people with missing attributes (first name, last name, gender, birthday). Click any person to jump to their edit form.
+4. Use **Export JSON** to copy or download the current data.
+5. Use the **{ }** button to view a diff of your changes vs. the original file, or edit raw JSON directly.
+6. Use the **reset** button to discard all localStorage changes and reload from the original encrypted data.
+7. Use the **lock** button to clear decrypted data and the cached password, returning to the password prompt. If you have unsaved edits, you'll be asked to confirm.
 
 ## License
 

@@ -416,6 +416,18 @@ body {
   height: 100%;
 }
 
+.f3 div.mini-tree {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.f3 div.mini-tree:hover {
+  opacity: 1;
+}
+[data-theme="light"] .f3 div.mini-tree svg line {
+  stroke: #666;
+}
+
 .f3-form-cont,
 .f3-nav-cont,
 .f3-modal,

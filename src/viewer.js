@@ -35,6 +35,10 @@ export function getKinshipRules() {
   return kinshipRules;
 }
 
+export function getRelationshipLabels() {
+  return relationshipLabels;
+}
+
 export function getChart() {
   return chart;
 }

@@ -1,4 +1,4 @@
-import { getFamilyData, setFamilyData, refreshViewer, normalizeData } from './viewer.js';
+import { getFamilyData, setFamilyData, refreshViewer, normalizeData, getRelationshipLabels } from './viewer.js';
 import { confirmModal, showToast } from './ui.js';
 import { proposeChanges } from './propose.js';
 import { cacheGet, cacheSet, cacheRemove } from './storage.js';
@@ -49,12 +49,15 @@ function renderPersonList() {
   const data = getFamilyData();
   list.innerHTML = '<h3>All Family Members</h3>';
 
+  const labels = getRelationshipLabels();
   data.forEach(person => {
     const item = document.createElement('div');
     item.className = 'person-list-item';
     const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+    const rel = labels.get(person.id);
+    const relHtml = rel ? ` <span class="person-list-rel">(${rel.te})</span>` : '';
     item.innerHTML = `
-      <span class="person-list-name">${name}</span>
+      <span class="person-list-name">${name}${relHtml}</span>
       <button class="btn btn-small btn-secondary" data-id="${person.id}">Edit</button>
     `;
     item.querySelector('button').addEventListener('click', () => showEditForm(person.id));
@@ -110,6 +113,7 @@ function showEditForm(personId) {
 
 function populateRelationshipSelects() {
   const data = getFamilyData();
+  const labels = getRelationshipLabels();
   const pickers = ['parentPicker', 'spousePicker', 'childrenPicker'];
 
   for (const pickerId of pickers) {
@@ -121,6 +125,7 @@ function populateRelationshipSelects() {
     data.forEach(person => {
       if (person.id === editingPersonId) return;
       const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+      const rel = labels.get(person.id);
 
       const li = document.createElement('li');
       const cb = document.createElement('input');
@@ -129,7 +134,7 @@ function populateRelationshipSelects() {
       cb.id = `${pickerId}_${person.id}`;
 
       const lbl = document.createElement('span');
-      lbl.textContent = name;
+      lbl.innerHTML = rel ? `${name} <span class="rel-picker-kinship">(${rel.te})</span>` : name;
 
       li.appendChild(cb);
       li.appendChild(lbl);
@@ -143,7 +148,7 @@ function populateRelationshipSelects() {
     searchInput.oninput = () => {
       const q = searchInput.value.toLowerCase().trim();
       list.querySelectorAll('li').forEach(li => {
-        const name = li.querySelector('label').textContent.toLowerCase();
+        const name = li.querySelector('span').textContent.toLowerCase();
         li.classList.toggle('hidden', q && !name.includes(q));
       });
     };
@@ -387,13 +392,16 @@ function renderQualityPanel() {
     return;
   }
 
+  const labels = getRelationshipLabels();
   list.innerHTML = `<p class="quality-summary">${issues.length} member${issues.length > 1 ? 's' : ''} with missing data</p>`;
   for (const item of issues) {
+    const rel = labels.get(item.id);
+    const relHtml = rel ? ` <span class="person-list-rel">(${rel.te})</span>` : '';
     const row = document.createElement('div');
     row.className = 'quality-item';
     row.innerHTML = `
       <div>
-        <div class="quality-item-name">${item.name}</div>
+        <div class="quality-item-name">${item.name}${relHtml}</div>
         <div class="quality-item-tags">
           ${item.missing.map(f => `<span class="quality-tag">${f}</span>`).join('')}
         </div>

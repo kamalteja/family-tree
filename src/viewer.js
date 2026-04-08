@@ -485,6 +485,9 @@ function setupSearch() {
   const panel = document.getElementById('searchPanel');
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
+  const shortcutEl = document.getElementById('searchShortcut');
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  if (shortcutEl) shortcutEl.textContent = isMac ? '⌘F' : 'Ctrl+F';
 
   function open() {
     panel.style.display = '';
@@ -531,7 +534,10 @@ function setupSearch() {
     panel.style.display === 'none' ? open() : close();
   });
 
-  input.addEventListener('input', () => search(input.value));
+  input.addEventListener('input', () => {
+    if (shortcutEl) shortcutEl.style.display = input.value ? 'none' : '';
+    search(input.value);
+  });
 
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') close();

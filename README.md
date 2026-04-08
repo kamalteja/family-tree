@@ -12,7 +12,7 @@ Deployed to GitHub Pages as a fully static site — no backend required. All dat
 - **Two views** — *Principal View* (centered on one person) and *Full Tree* (expands to the oldest ancestor in that lineage)
 - **Hidden relatives indicator** — nodes with relatives not shown in the current view display a mini-tree marker
 - **Interactive visualization** — zoom, pan, hover-to-trace path to principal, powered by [family-chart](https://github.com/nicehero/family-chart)
-- **Search** — floating search bar to find and navigate to any person in the tree
+- **Search** — floating search bar (`Ctrl+F` / `⌘F`) to find and navigate to any person in the tree
 - **Member count** — total family members displayed in the toolbar
 - **Dark / light theme** toggle
 - **In-browser editor** — add, edit, and delete family members with bidirectional relationship syncing

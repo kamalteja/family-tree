@@ -82,53 +82,62 @@ function showEditForm(personId) {
 
   populateRelationshipSelects();
 
-  const parentSelect = document.getElementById('parentSelect');
   (person.rels.parents || []).forEach(pid => {
-    const opt = parentSelect.querySelector(`option[value="${pid}"]`);
-    if (opt) opt.selected = true;
+    const cb = document.querySelector(`#parentPicker_${pid}`);
+    if (cb) cb.checked = true;
   });
 
-  const spouseSelect = document.getElementById('spouseSelect');
   (person.rels.spouses || []).forEach(sid => {
-    const opt = spouseSelect.querySelector(`option[value="${sid}"]`);
-    if (opt) opt.selected = true;
+    const cb = document.querySelector(`#spousePicker_${sid}`);
+    if (cb) cb.checked = true;
   });
 
-  const childrenSelect = document.getElementById('childrenSelect');
   (person.rels.children || []).forEach(cid => {
-    const opt = childrenSelect.querySelector(`option[value="${cid}"]`);
-    if (opt) opt.selected = true;
+    const cb = document.querySelector(`#childrenPicker_${cid}`);
+    if (cb) cb.checked = true;
   });
 }
 
 function populateRelationshipSelects() {
   const data = getFamilyData();
-  const parentSelect = document.getElementById('parentSelect');
-  const spouseSelect = document.getElementById('spouseSelect');
-  const childrenSelect = document.getElementById('childrenSelect');
-  parentSelect.innerHTML = '';
-  spouseSelect.innerHTML = '';
-  childrenSelect.innerHTML = '';
+  const pickers = ['parentPicker', 'spousePicker', 'childrenPicker'];
 
-  data.forEach(person => {
-    if (person.id === editingPersonId) return;
-    const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+  for (const pickerId of pickers) {
+    const picker = document.getElementById(pickerId);
+    const list = picker.querySelector('.rel-picker-list');
+    const searchInput = picker.querySelector('.rel-picker-search');
+    list.innerHTML = '';
 
-    const pOpt = document.createElement('option');
-    pOpt.value = person.id;
-    pOpt.textContent = name;
-    parentSelect.appendChild(pOpt);
+    data.forEach(person => {
+      if (person.id === editingPersonId) return;
+      const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
 
-    const sOpt = document.createElement('option');
-    sOpt.value = person.id;
-    sOpt.textContent = name;
-    spouseSelect.appendChild(sOpt);
+      const li = document.createElement('li');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = person.id;
+      cb.id = `${pickerId}_${person.id}`;
 
-    const cOpt = document.createElement('option');
-    cOpt.value = person.id;
-    cOpt.textContent = name;
-    childrenSelect.appendChild(cOpt);
-  });
+      const lbl = document.createElement('span');
+      lbl.textContent = name;
+
+      li.appendChild(cb);
+      li.appendChild(lbl);
+      li.addEventListener('click', (e) => {
+        if (e.target !== cb) cb.checked = !cb.checked;
+      });
+      list.appendChild(li);
+    });
+
+    searchInput.value = '';
+    searchInput.oninput = () => {
+      const q = searchInput.value.toLowerCase().trim();
+      list.querySelectorAll('li').forEach(li => {
+        const name = li.querySelector('label').textContent.toLowerCase();
+        li.classList.toggle('hidden', q && !name.includes(q));
+      });
+    };
+  }
 }
 
 function hideForm() {
@@ -143,9 +152,18 @@ function clearForm() {
   document.getElementById('lastName').value = '';
   document.getElementById('gender').value = 'M';
   document.getElementById('birthday').value = '';
-  document.getElementById('parentSelect').selectedIndex = -1;
-  document.getElementById('spouseSelect').selectedIndex = -1;
-  document.getElementById('childrenSelect').selectedIndex = -1;
+  for (const id of ['parentPicker', 'spousePicker', 'childrenPicker']) {
+    const picker = document.getElementById(id);
+    picker.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+    picker.querySelector('.rel-picker-search').value = '';
+    picker.querySelectorAll('li').forEach(li => li.classList.remove('hidden'));
+  }
+}
+
+function getCheckedIds(pickerId) {
+  return Array.from(
+    document.querySelectorAll(`#${pickerId} input[type="checkbox"]:checked`)
+  ).map(cb => cb.value);
 }
 
 function handleSave(e) {
@@ -157,9 +175,9 @@ function handleSave(e) {
   const gender = document.getElementById('gender').value;
   const birthday = document.getElementById('birthday').value.trim();
 
-  const selectedParents = Array.from(document.getElementById('parentSelect').selectedOptions).map(o => o.value);
-  const selectedSpouses = Array.from(document.getElementById('spouseSelect').selectedOptions).map(o => o.value);
-  const selectedChildren = Array.from(document.getElementById('childrenSelect').selectedOptions).map(o => o.value);
+  const selectedParents = getCheckedIds('parentPicker');
+  const selectedSpouses = getCheckedIds('spousePicker');
+  const selectedChildren = getCheckedIds('childrenPicker');
 
   if (editingPersonId) {
     const person = data.find(p => p.id === editingPersonId);

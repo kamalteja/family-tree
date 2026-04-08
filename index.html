@@ -47,6 +47,7 @@
         <button id="editModeBtn" class="btn btn-primary">Edit</button>
         <button id="viewModeBtn" class="btn btn-secondary" style="display:none;">Back to Viewer</button>
         <button id="exportBtn" class="btn btn-secondary" style="display:none;">Export JSON</button>
+        <button id="proposeBtn" class="btn btn-primary" style="display:none;">Propose Changes</button>
         <button id="resetDataBtn" class="theme-toggle" title="Reset to original data">&#8635;</button>
         <button id="editJsonBtn" class="theme-toggle" title="Edit raw JSON data">{ }</button>
         <button id="lockBtn" class="theme-toggle" title="Lock and clear decrypted data">&#128274;</button>
@@ -192,6 +193,47 @@
       <div class="confirm-actions">
         <button id="confirmOkBtn" class="btn btn-danger">Confirm</button>
         <button id="confirmCancelBtn" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="proposePwModal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal-content">
+      <h3>Propose Password</h3>
+      <p>Enter the propose password to create a PR.</p>
+      <input type="password" id="proposePwInput" placeholder="Propose password" autocomplete="off" />
+      <div id="proposePwError" class="password-error"></div>
+      <div class="confirm-actions">
+        <button id="proposePwSubmit" class="btn btn-primary">Continue</button>
+        <button id="proposePwCancel" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="proposeNameModal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal-content">
+      <h3>Your Name</h3>
+      <p>This will appear in the pull request for attribution.</p>
+      <input type="text" id="proposeNameInput" placeholder="e.g. Aunt Lakshmi" autocomplete="off" />
+      <div class="confirm-actions">
+        <button id="proposeNameSubmit" class="btn btn-primary">Propose</button>
+        <button id="proposeNameCancel" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="proposeProgressModal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal-content propose-progress-content">
+      <h3>Proposing Changes</h3>
+      <ul class="propose-steps">
+        <li class="propose-step step-pending"><span class="step-icon">○</span> Encrypting data</li>
+        <li class="propose-step step-pending"><span class="step-icon">○</span> Authenticating with GitHub</li>
+        <li class="propose-step step-pending"><span class="step-icon">○</span> Creating pull request</li>
+      </ul>
+      <div id="proposeResult" class="propose-result"></div>
+      <div class="confirm-actions">
+        <button id="proposeProgressCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="proposeProgressCloseBtn" class="btn btn-secondary" style="display:none;">Close</button>
       </div>
     </div>
   </div>

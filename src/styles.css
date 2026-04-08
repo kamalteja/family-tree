@@ -1187,6 +1187,103 @@ body {
   animation: card-pulse 0.6s ease-out 3;
 }
 
+/* ---- Propose Modal inputs ---- */
+
+#proposePwModal .confirm-modal-content input,
+#proposeNameModal .confirm-modal-content input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+#proposePwModal .confirm-modal-content input:focus,
+#proposeNameModal .confirm-modal-content input:focus {
+  border-color: var(--primary);
+}
+
+/* ---- Propose Progress ---- */
+
+.propose-progress-content {
+  max-width: 440px;
+}
+
+.propose-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.propose-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.propose-step.step-active {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.propose-step.step-done {
+  color: #16a34a;
+}
+
+.propose-step.step-error {
+  color: var(--danger);
+}
+
+.step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.step-active .step-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.propose-result {
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 20px;
+  word-break: break-all;
+}
+
+.propose-result a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.propose-success {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.propose-error {
+  color: var(--danger);
+  font-weight: 500;
+}
+
 /* ---- Responsive ---- */
 
 @media (max-width: 640px) {

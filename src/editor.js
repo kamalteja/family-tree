@@ -1,5 +1,7 @@
-import { getFamilyData, setFamilyData, refreshViewer } from './viewer.js';
+import { getFamilyData, setFamilyData, refreshViewer, normalizeData } from './viewer.js';
 import { confirmModal, showToast } from './ui.js';
+import { proposeChanges } from './propose.js';
+import { cacheGet, cacheSet, cacheRemove } from './storage.js';
 
 let editingPersonId = null;
 
@@ -11,6 +13,7 @@ export function initEditor() {
   document.getElementById('personForm').addEventListener('submit', handleSave);
   document.getElementById('deletePersonBtn').addEventListener('click', handleDelete);
   document.getElementById('exportBtn').addEventListener('click', exportJson);
+  document.getElementById('proposeBtn').addEventListener('click', proposeChanges);
   document.getElementById('qualityBtn').addEventListener('click', toggleQualityPanel);
   document.getElementById('closeQualityBtn').addEventListener('click', () => {
     document.getElementById('qualityPanel').style.display = 'none';
@@ -22,6 +25,7 @@ function enterEditMode() {
   document.getElementById('editModeBtn').style.display = 'none';
   document.getElementById('viewModeBtn').style.display = 'inline-block';
   document.getElementById('exportBtn').style.display = 'inline-block';
+  document.getElementById('proposeBtn').style.display = cacheGet('family-tree-data') && !cacheGet('family-tree-proposed') ? 'inline-block' : 'none';
   document.getElementById('principalSelector').style.display = 'none';
   document.getElementById('toggleViewBtn').style.display = 'none';
   renderPersonList();
@@ -33,6 +37,7 @@ function exitEditMode() {
   document.getElementById('editModeBtn').style.display = 'inline-block';
   document.getElementById('viewModeBtn').style.display = 'none';
   document.getElementById('exportBtn').style.display = 'none';
+  document.getElementById('proposeBtn').style.display = 'none';
   document.getElementById('principalSelector').style.display = 'flex';
   document.getElementById('toggleViewBtn').style.display = 'inline-block';
   hideForm();
@@ -294,28 +299,28 @@ function generateId(firstName, lastName) {
 }
 
 function cleanData(data) {
-  return data
+  const toAddIds = new Set(data.filter(d => d.to_add).map(d => d.id));
+  const stripped = data
     .filter(p => !p.to_add)
-    .map(p => {
-      const clean = {
-        id: p.id,
-        data: { ...p.data },
-        rels: {
-          spouses: [...(p.rels.spouses || [])],
-          parents: [...(p.rels.parents || [])],
-          children: [...(p.rels.children || [])],
-        },
-      };
-      const toAddIds = new Set(data.filter(d => d.to_add).map(d => d.id));
-      clean.rels.spouses = clean.rels.spouses.filter(id => !toAddIds.has(id));
-      clean.rels.parents = clean.rels.parents.filter(id => !toAddIds.has(id));
-      clean.rels.children = clean.rels.children.filter(id => !toAddIds.has(id));
-      return clean;
-    });
+    .map(p => ({
+      id: p.id,
+      data: { ...p.data },
+      rels: {
+        spouses: (p.rels.spouses || []).filter(id => !toAddIds.has(id)),
+        parents: (p.rels.parents || []).filter(id => !toAddIds.has(id)),
+        children: (p.rels.children || []).filter(id => !toAddIds.has(id)),
+      },
+    }));
+  return normalizeData(stripped);
 }
 
 function saveToLocalStorage(data) {
-  localStorage.setItem('family-tree-data', JSON.stringify(cleanData(data)));
+  cacheSet('family-tree-data', JSON.stringify(cleanData(data)));
+  cacheRemove('family-tree-proposed');
+  const proposeBtn = document.getElementById('proposeBtn');
+  if (proposeBtn && proposeBtn.style.display !== 'none' || document.getElementById('editorPanel').style.display === 'block') {
+    proposeBtn.style.display = 'inline-block';
+  }
 }
 
 function exportJson() {

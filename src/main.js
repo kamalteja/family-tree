@@ -180,9 +180,16 @@ function showApp() {
   document.documentElement.style.setProperty('--toolbar-height', toolbar.offsetHeight + 'px');
 }
 
+function initProposeProgressClose() {
+  document.getElementById('proposeProgressCloseBtn').addEventListener('click', () => {
+    document.getElementById('proposeProgressModal').style.display = 'none';
+  });
+}
+
 function lockApp() {
   localStorage.removeItem(PASSWORD_KEY);
   localStorage.removeItem('family-tree-data');
+  localStorage.removeItem('family-tree-propose-pw');
   setFamilyData([]);
   document.getElementById('FamilyChart').innerHTML = '';
   document.getElementById('app').style.display = 'none';
@@ -249,6 +256,7 @@ async function main() {
   initInfoModal();
   initLockButton();
   initPasswordModal();
+  initProposeProgressClose();
 
   if (import.meta.env.DEV) {
     try {

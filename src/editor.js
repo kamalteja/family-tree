@@ -1,5 +1,6 @@
 import { getFamilyData, setFamilyData, refreshViewer } from './viewer.js';
 import { confirmModal, showToast } from './ui.js';
+import { proposeChanges } from './propose.js';
 
 let editingPersonId = null;
 
@@ -11,6 +12,7 @@ export function initEditor() {
   document.getElementById('personForm').addEventListener('submit', handleSave);
   document.getElementById('deletePersonBtn').addEventListener('click', handleDelete);
   document.getElementById('exportBtn').addEventListener('click', exportJson);
+  document.getElementById('proposeBtn').addEventListener('click', proposeChanges);
   document.getElementById('qualityBtn').addEventListener('click', toggleQualityPanel);
   document.getElementById('closeQualityBtn').addEventListener('click', () => {
     document.getElementById('qualityPanel').style.display = 'none';
@@ -22,6 +24,7 @@ function enterEditMode() {
   document.getElementById('editModeBtn').style.display = 'none';
   document.getElementById('viewModeBtn').style.display = 'inline-block';
   document.getElementById('exportBtn').style.display = 'inline-block';
+  document.getElementById('proposeBtn').style.display = localStorage.getItem('family-tree-data') ? 'inline-block' : 'none';
   document.getElementById('principalSelector').style.display = 'none';
   document.getElementById('toggleViewBtn').style.display = 'none';
   renderPersonList();
@@ -33,6 +36,7 @@ function exitEditMode() {
   document.getElementById('editModeBtn').style.display = 'inline-block';
   document.getElementById('viewModeBtn').style.display = 'none';
   document.getElementById('exportBtn').style.display = 'none';
+  document.getElementById('proposeBtn').style.display = 'none';
   document.getElementById('principalSelector').style.display = 'flex';
   document.getElementById('toggleViewBtn').style.display = 'inline-block';
   hideForm();
@@ -316,6 +320,10 @@ function cleanData(data) {
 
 function saveToLocalStorage(data) {
   localStorage.setItem('family-tree-data', JSON.stringify(cleanData(data)));
+  const proposeBtn = document.getElementById('proposeBtn');
+  if (proposeBtn && proposeBtn.style.display !== 'none' || document.getElementById('editorPanel').style.display === 'block') {
+    proposeBtn.style.display = 'inline-block';
+  }
 }
 
 function exportJson() {

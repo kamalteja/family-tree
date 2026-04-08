@@ -232,6 +232,7 @@ export function changePrincipal(newId) {
 
   isFullTreeView = false;
   updateToggleButton();
+  document.dispatchEvent(new CustomEvent('principal-changed'));
 }
 
 export function buildFamilyGraph(data) {

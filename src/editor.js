@@ -18,6 +18,19 @@ export function initEditor() {
   document.getElementById('closeQualityBtn').addEventListener('click', () => {
     document.getElementById('qualityPanel').style.display = 'none';
   });
+
+  document.addEventListener('principal-changed', () => {
+    if (document.getElementById('editorPanel').style.display === 'block') {
+      renderPersonList();
+      if (document.getElementById('personForm').style.display === 'block') {
+        populateRelationshipSelects();
+        if (editingPersonId) restoreCheckedRels();
+      }
+      if (document.getElementById('qualityPanel').style.display === 'block') {
+        renderQualityPanel();
+      }
+    }
+  });
 }
 
 function enterEditMode() {
@@ -26,7 +39,6 @@ function enterEditMode() {
   document.getElementById('viewModeBtn').style.display = 'inline-block';
   document.getElementById('exportBtn').style.display = 'inline-block';
   document.getElementById('proposeBtn').style.display = cacheGet('family-tree-data') && !cacheGet('family-tree-proposed') ? 'inline-block' : 'none';
-  document.getElementById('principalSelector').style.display = 'none';
   document.getElementById('toggleViewBtn').style.display = 'none';
   renderPersonList();
 }
@@ -180,6 +192,23 @@ function getCheckedIds(pickerId) {
   return Array.from(
     document.querySelectorAll(`#${pickerId} input[type="checkbox"]:checked`)
   ).map(cb => cb.value);
+}
+
+function restoreCheckedRels() {
+  const person = getFamilyData().find(p => p.id === editingPersonId);
+  if (!person) return;
+  (person.rels.parents || []).forEach(pid => {
+    const cb = document.querySelector(`#parentPicker_${pid}`);
+    if (cb) cb.checked = true;
+  });
+  (person.rels.spouses || []).forEach(sid => {
+    const cb = document.querySelector(`#spousePicker_${sid}`);
+    if (cb) cb.checked = true;
+  });
+  (person.rels.children || []).forEach(cid => {
+    const cb = document.querySelector(`#childrenPicker_${cid}`);
+    if (cb) cb.checked = true;
+  });
 }
 
 function handleSave(e) {

@@ -84,6 +84,68 @@ async function checkAppConfigExists() {
   return text.length > 0 && !text.trimStart().startsWith('<');
 }
 
+function personLabel(p) {
+  const name = [p.data['first name'], p.data['last name']].filter(Boolean).join(' ');
+  return `**${name}** (\`${p.id}\`)`;
+}
+
+function formatValue(v) {
+  if (Array.isArray(v)) return v.length ? v.join(', ') : '_(empty)_';
+  return v == null || v === '' ? '_(empty)_' : String(v);
+}
+
+function buildPRBody(proposerName, added, removed, modified, original) {
+  const sections = [];
+  sections.push(`## Changes proposed by ${proposerName}\n`);
+
+  if (added.length) {
+    sections.push(`### Added (${added.length})\n`);
+    for (const p of added) {
+      const lines = [personLabel(p)];
+      for (const [key, val] of Object.entries(p.data)) {
+        if (val != null && val !== '') lines.push(`- ${key}: ${val}`);
+      }
+      for (const [rel, ids] of Object.entries(p.rels)) {
+        if (ids.length) lines.push(`- ${rel}: ${ids.join(', ')}`);
+      }
+      sections.push(lines.join('\n') + '\n');
+    }
+  }
+
+  if (removed.length) {
+    sections.push(`### Removed (${removed.length})\n`);
+    for (const p of removed) {
+      sections.push(personLabel(p) + '\n');
+    }
+  }
+
+  if (modified.length) {
+    sections.push(`### Modified (${modified.length})\n`);
+    for (const p of modified) {
+      const orig = original.find(o => o.id === p.id);
+      const lines = [personLabel(p)];
+      for (const key of new Set([...Object.keys(orig.data), ...Object.keys(p.data)])) {
+        const oldVal = orig.data[key];
+        const newVal = p.data[key];
+        if (oldVal !== newVal) {
+          lines.push(`- ${key}: \`${formatValue(oldVal)}\` → \`${formatValue(newVal)}\``);
+        }
+      }
+      for (const rel of ['spouses', 'parents', 'children']) {
+        const oldIds = orig.rels[rel] || [];
+        const newIds = p.rels[rel] || [];
+        if (JSON.stringify(oldIds) !== JSON.stringify(newIds)) {
+          lines.push(`- ${rel}: \`${formatValue(oldIds)}\` → \`${formatValue(newIds)}\``);
+        }
+      }
+      sections.push(lines.join('\n') + '\n');
+    }
+  }
+
+  sections.push('---\n_Created from the Family Tree editor_');
+  return sections.join('\n');
+}
+
 export async function proposeChanges() {
   if (cacheGet(PROPOSED_KEY)) {
     showToast('Changes already proposed — edit further to propose again', 'error');
@@ -231,13 +293,8 @@ export async function proposeChanges() {
     }
 
     abort.signal.throwIfAborted();
-    const summaryParts = [];
-    if (added.length) summaryParts.push(`Added ${added.length} person(s): ${added.map(p => p.data['first name']).join(', ')}`);
-    if (removed.length) summaryParts.push(`Removed ${removed.length} person(s): ${removed.map(p => p.data['first name']).join(', ')}`);
-    if (modified.length) summaryParts.push(`Modified ${modified.length} person(s): ${modified.map(p => p.data['first name']).join(', ')}`);
-
     const prTitle = `Family tree update by ${proposerName}`;
-    const prBody = `## Changes proposed by ${proposerName}\n\n${summaryParts.join('\n')}\n\n_Created from the Family Tree editor_`;
+    const prBody = buildPRBody(proposerName, added, removed, modified, original);
 
     const pr = await createPR({
       token,

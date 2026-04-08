@@ -1,7 +1,7 @@
 export const CACHE_POLICY = {
-  'family-tree-password':      { enabled: true },
+  'family-tree-password':      { enabled: true, store: 'session' },
   'family-tree-propose-pw':    { enabled: true, store: 'session' },
-  'family-tree-data':          { enabled: true },
+  'family-tree-data':          { enabled: true , store: 'local' },
   'family-tree-proposed':      { enabled: true },
   'family-tree-proposer-name': { enabled: true },
   'family-tree-theme':         { enabled: true },

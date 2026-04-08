@@ -133,17 +133,17 @@ Array of person objects:
 
 ```json
 {
-  "id": "kamal_teja_gurramkonda_66kf",
+  "id": "ravi_kumar_a1b2",
   "data": {
-    "first name": "Kamal Teja",
-    "last name": "Gurramkonda",
+    "first name": "Ravi",
+    "last name": "Kumar",
     "gender": "M",
-    "birthday": "1993-03-29",
-    "avatar": "kamal.png"
+    "birthday": "1990-01-15",
+    "avatar": "ravi.png"
   },
   "rels": {
-    "spouses": ["tanvi_gurramkonda_a3b2"],
-    "parents": ["ramanaiah_gurramkonda_x1y2", "sreedevi_gurramkonda_z3w4"],
+    "spouses": ["priya_kumar_c3d4"],
+    "parents": ["suresh_kumar_e5f6", "lakshmi_kumar_g7h8"],
     "children": []
   }
 }

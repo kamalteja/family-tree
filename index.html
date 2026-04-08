@@ -14,7 +14,7 @@
     <div class="password-modal-content">
       <h2>Family Tree</h2>
       <p>Enter the password to view family data.</p>
-      <input type="password" id="passwordInput" placeholder="Password" autocomplete="off" />
+      <input type="password" id="passwordInput" name="password" placeholder="Password" autocomplete="off" />
       <div id="passwordError" class="password-error"></div>
       <button id="passwordSubmit" class="btn btn-primary">Unlock</button>
     </div>
@@ -26,7 +26,7 @@
       <div class="toolbar-left">
         <a href="" id="appHomeLink"><img src="/tree-icon.svg" alt="" class="app-logo" /></a>
         <div class="principal-selector" id="principalSelector">
-          <label>Principal Person:</label>
+          <label for="principalTrigger">Principal Person:</label>
           <div class="custom-select" id="principalDropdown">
             <button class="custom-select-trigger" id="principalTrigger" type="button">
               <span class="custom-select-value">Select person</span>
@@ -148,23 +148,23 @@
           <input type="date" id="birthday" />
         </div>
         <div class="form-group">
-          <label>Parents</label>
+          <label for="parentSearch">Parents</label>
           <div class="rel-picker" id="parentPicker">
-            <input type="text" class="rel-picker-search" placeholder="Search..." autocomplete="off" />
+            <input type="text" class="rel-picker-search" id="parentSearch" placeholder="Search..." autocomplete="off" />
             <ul class="rel-picker-list"></ul>
           </div>
         </div>
         <div class="form-group">
-          <label>Spouse</label>
+          <label for="spouseSearch">Spouse</label>
           <div class="rel-picker" id="spousePicker">
-            <input type="text" class="rel-picker-search" placeholder="Search..." autocomplete="off" />
+            <input type="text" class="rel-picker-search" id="spouseSearch" placeholder="Search..." autocomplete="off" />
             <ul class="rel-picker-list"></ul>
           </div>
         </div>
         <div class="form-group">
-          <label>Children</label>
+          <label for="childrenSearch">Children</label>
           <div class="rel-picker" id="childrenPicker">
-            <input type="text" class="rel-picker-search" placeholder="Search..." autocomplete="off" />
+            <input type="text" class="rel-picker-search" id="childrenSearch" placeholder="Search..." autocomplete="off" />
             <ul class="rel-picker-list"></ul>
           </div>
         </div>
@@ -201,7 +201,7 @@
     <div class="confirm-modal-content">
       <h3>Propose Password</h3>
       <p>Enter the propose password to create a PR.</p>
-      <input type="password" id="proposePwInput" placeholder="Propose password" autocomplete="off" />
+      <input type="password" id="proposePwInput" name="proposePw" placeholder="Propose password" autocomplete="off" />
       <div id="proposePwError" class="password-error"></div>
       <div class="confirm-actions">
         <button id="proposePwSubmit" class="btn btn-primary">Continue</button>
@@ -214,7 +214,7 @@
     <div class="confirm-modal-content">
       <h3>Your Name</h3>
       <p>This will appear in the pull request for attribution.</p>
-      <input type="text" id="proposeNameInput" placeholder="e.g. Aunt Lakshmi" autocomplete="off" />
+      <input type="text" id="proposeNameInput" name="proposerName" placeholder="e.g. Aunt Lakshmi" autocomplete="off" />
       <div class="confirm-actions">
         <button id="proposeNameSubmit" class="btn btn-primary">Propose</button>
         <button id="proposeNameCancel" class="btn btn-secondary">Cancel</button>

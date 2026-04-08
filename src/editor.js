@@ -71,8 +71,10 @@ function showEditForm(personId) {
   if (!person) return;
 
   editingPersonId = personId;
-  document.getElementById('personForm').style.display = 'block';
+  const form = document.getElementById('personForm');
+  form.style.display = 'block';
   document.getElementById('deletePersonBtn').style.display = 'inline-block';
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   document.getElementById('personId').value = person.id;
   document.getElementById('firstName').value = person.data['first name'] || '';

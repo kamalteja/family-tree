@@ -65,9 +65,11 @@ function renderPersonList() {
 function showAddForm() {
   editingPersonId = null;
   document.getElementById('personForm').style.display = 'block';
+  document.getElementById('personList').style.display = 'none';
   document.getElementById('deletePersonBtn').style.display = 'none';
   clearForm();
   populateRelationshipSelects();
+  document.getElementById('editorPanel').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showEditForm(personId) {
@@ -78,8 +80,9 @@ function showEditForm(personId) {
   editingPersonId = personId;
   const form = document.getElementById('personForm');
   form.style.display = 'block';
+  document.getElementById('personList').style.display = 'none';
   document.getElementById('deletePersonBtn').style.display = 'inline-block';
-  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('editorPanel').scrollTo({ top: 0, behavior: 'smooth' });
 
   document.getElementById('personId').value = person.id;
   document.getElementById('firstName').value = person.data['first name'] || '';
@@ -149,6 +152,7 @@ function populateRelationshipSelects() {
 
 function hideForm() {
   document.getElementById('personForm').style.display = 'none';
+  document.getElementById('personList').style.display = '';
   editingPersonId = null;
   clearForm();
 }

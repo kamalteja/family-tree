@@ -4,9 +4,9 @@ import { cacheGet, cacheSet, cacheRemove, CACHE_POLICY } from './storage.js';
 describe('CACHE_POLICY', () => {
   it('has the expected keys and states', () => {
     expect(CACHE_POLICY).toEqual({
-      'family-tree-password':      { enabled: true },
+      'family-tree-password':      { enabled: true, store: 'session' },
       'family-tree-propose-pw':    { enabled: true, store: 'session' },
-      'family-tree-data':          { enabled: true },
+      'family-tree-data':          { enabled: true, store: 'local' },
       'family-tree-proposed':      { enabled: true },
       'family-tree-proposer-name': { enabled: true },
       'family-tree-theme':         { enabled: true },
@@ -14,11 +14,11 @@ describe('CACHE_POLICY', () => {
     });
   });
 
-  it('propose password is the only session-stored key', () => {
+  it('session-stored keys are password and propose password', () => {
     const session = Object.entries(CACHE_POLICY)
       .filter(([, v]) => v.store === 'session')
       .map(([k]) => k);
-    expect(session).toEqual(['family-tree-propose-pw']);
+    expect(session).toEqual(['family-tree-password', 'family-tree-propose-pw']);
   });
 });
 
@@ -42,10 +42,10 @@ describe('cache wrapper — local store', () => {
     });
   });
 
-  it('cacheSet stores enabled local keys in localStorage', () => {
-    cacheSet('family-tree-password', 'secret');
-    expect(local['family-tree-password']).toBe('secret');
-    expect(session['family-tree-password']).toBeUndefined();
+  it('cacheSet stores local keys in localStorage', () => {
+    cacheSet('family-tree-data', '[]');
+    expect(local['family-tree-data']).toBe('[]');
+    expect(session['family-tree-data']).toBeUndefined();
   });
 
   it('cacheSet stores session keys in sessionStorage', () => {

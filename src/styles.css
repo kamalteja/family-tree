@@ -125,40 +125,28 @@ body {
 
 #toolbar {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 10px 20px;
+  padding: 8px 16px;
+  gap: 8px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow);
   z-index: 100;
   flex-shrink: 0;
   transition: background 0.3s, border-color 0.3s;
-  position: relative;
 }
 
-.toolbar-left {
+.toolbar-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.app-home-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: inherit;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .app-logo {
-  height: 48px;
+  height: 40px;
   flex-shrink: 0;
 }
 [data-theme="dark"] .app-logo {
@@ -166,14 +154,14 @@ body {
 }
 
 .app-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-family: 'Pacifico', cursive;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 400;
   white-space: nowrap;
-  pointer-events: none;
+  margin: 0;
+  flex: 1 1 auto;
+  text-align: center;
+  min-width: 0;
 }
 
 .member-count {
@@ -191,6 +179,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .principal-selector label {
@@ -201,7 +191,9 @@ body {
 
 .custom-select {
   position: relative;
-  min-width: 200px;
+  min-width: 120px;
+  max-width: 250px;
+  flex-shrink: 1;
 }
 
 .custom-select-trigger {
@@ -1286,18 +1278,17 @@ body {
 
 /* ---- Responsive ---- */
 
-@media (max-width: 640px) {
-  #toolbar {
-    flex-direction: column;
-    gap: 8px;
-    padding: 8px 12px;
-  }
+@media (max-width: 900px) {
+  .principal-selector label { display: none; }
+  .app-title { display: none; }
+}
 
-  .toolbar-left, .toolbar-right {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+@media (max-width: 640px) {
+  #toolbar { padding: 6px 10px; gap: 6px; }
+  .app-logo { height: 32px; }
+  .member-count { display: none; }
+  .custom-select { min-width: 100px; }
+  .btn { padding: 6px 10px; font-size: 13px; }
 
   #editorPanel {
     width: 100%;
@@ -1307,4 +1298,11 @@ body {
     border-left: none;
     border-top: 1px solid var(--border);
   }
+}
+
+@media (max-width: 400px) {
+  #toolbar { padding: 4px 8px; gap: 4px; }
+  .toolbar-actions { gap: 4px; }
+  .btn { padding: 5px 8px; font-size: 12px; }
+  .theme-toggle { width: 30px; height: 30px; font-size: 14px; }
 }

@@ -22,25 +22,23 @@
 
   <div id="app" style="display:none;">
     <header id="toolbar">
-      <h1 class="app-title">Family Tree</h1>
-      <div class="toolbar-left">
-        <a href="" id="appHomeLink"><img src="/tree-icon.svg" alt="" class="app-logo" /></a>
-        <div class="principal-selector" id="principalSelector">
-          <label for="principalTrigger">Principal Person:</label>
-          <div class="custom-select" id="principalDropdown">
-            <button class="custom-select-trigger" id="principalTrigger" type="button">
-              <span class="custom-select-value">Select person</span>
-              <span class="custom-select-arrow">&#9662;</span>
-            </button>
-            <div class="custom-select-menu" id="principalMenu">
-              <input type="text" class="custom-select-search" id="principalSearch" placeholder="Search..." autocomplete="off" />
-              <ul class="custom-select-options" id="principalOptions"></ul>
-            </div>
+      <a href="" id="appHomeLink"><img src="/tree-icon.svg" alt="" class="app-logo" /></a>
+      <div class="principal-selector" id="principalSelector">
+        <label for="principalTrigger">Principal Person:</label>
+        <div class="custom-select" id="principalDropdown">
+          <button class="custom-select-trigger" id="principalTrigger" type="button">
+            <span class="custom-select-value">Select person</span>
+            <span class="custom-select-arrow">&#9662;</span>
+          </button>
+          <div class="custom-select-menu" id="principalMenu">
+            <input type="text" class="custom-select-search" id="principalSearch" placeholder="Search..." autocomplete="off" />
+            <ul class="custom-select-options" id="principalOptions"></ul>
           </div>
         </div>
-        <span id="memberCount" class="member-count"></span>
       </div>
-      <div class="toolbar-right">
+      <span id="memberCount" class="member-count"></span>
+      <h1 class="app-title">Family Tree</h1>
+      <div class="toolbar-actions">
         <button id="searchBtn" class="btn btn-secondary" title="Search for a person (Ctrl+F)">&#128269;</button>
         <button id="fitViewBtn" class="btn btn-secondary" title="Center and fit tree to screen">&#8982;</button>
         <button id="toggleViewBtn" class="btn btn-secondary" style="display:none;">Show Full Tree</button>

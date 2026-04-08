@@ -18,6 +18,7 @@ Deployed to GitHub Pages as a fully static site — no backend required. All dat
 - **In-browser editor** — add, edit, and delete family members with bidirectional relationship syncing
 - **Data quality panel** — highlights people with missing attributes (name, gender, birthday) alongside the editor
 - **JSON diff viewer** — inline green/red diff view for inspecting changes before saving
+- **Propose Changes** — create a GitHub pull request directly from the editor with local edits, authenticated via a GitHub App
 - **Export / Import** — copy or download the current family data as JSON; edit raw JSON directly in a modal
 - **localStorage persistence** — editor changes survive page reloads; principal person selection is cached across sessions
 - **Avatars** — person photos stored encrypted alongside the data
@@ -44,8 +45,10 @@ family-tree/
 ├── src/
 │   ├── main.js                 # Entry point, theme, password flow, lock, JSON editor
 │   ├── viewer.js               # Chart rendering, principal selector, views
-│   ├── editor.js               # Add/edit/delete UI, localStorage, export
-│   ├── crypto.js               # Browser-side decryption (Web Crypto API)
+│   ├── editor.js               # Add/edit/delete UI, localStorage, export, propose
+│   ├── crypto.js               # Browser-side encrypt/decrypt (Web Crypto API)
+│   ├── github.js               # GitHub App JWT auth + Git Data API
+│   ├── propose.js              # Propose Changes orchestration (PR creation flow)
 │   ├── ui.js                   # Shared UI helpers (confirm modal, toast notifications)
 │   ├── kinship.js              # BFS graph traversal, path normalisation, state-machine resolver
 │   ├── telugu-terms.js         # Age comparison, fallback label composition
@@ -83,12 +86,14 @@ npm run encrypt
 
 This runs `scripts/encrypt.js`, which:
 
-1. Scans `public/data/` for `.json` files and `public/avatars/` for images
-2. Encrypts each file using AES-256-GCM with a PBKDF2-derived key (100,000 iterations, SHA-256)
-3. Writes `.enc` files alongside the originals
-4. Generates `public/data/.manifest` with SHA-256 checksums of all encrypted files
+1. Prompts for the **view password** (or uses `ENCRYPT_PASSWORD` env var)
+2. Scans `public/data/` for `.json` files (except `app.json`) and `public/avatars/` for images
+3. Encrypts each file using AES-256-GCM with a PBKDF2-derived key (100,000 iterations, SHA-256)
+4. If `public/data/app.json` exists, prompts for a **propose password** (or uses `PROPOSE_PASSWORD` env var) and encrypts it separately as `app.enc`
+5. Writes `.enc` files alongside the originals
+6. Generates `public/data/.manifest` with SHA-256 checksums of all encrypted files
 
-The password is entered interactively (masked input) or via the `ENCRYPT_PASSWORD` environment variable.
+Passwords are entered interactively (masked input) or via environment variables.
 
 ### Re-encrypting with a new password
 
@@ -175,6 +180,27 @@ To teach the engine a new relationship:
 ## Avatars
 
 Place image files (PNG, JPG, WebP, GIF) in `public/avatars/`. Set the `avatar` field in `family.json` to the filename. Run `npm run encrypt` to encrypt them. Images are decrypted in the browser and displayed as circular thumbnails on each card.
+
+## Propose Changes (PR from the browser)
+
+Family members with the **propose password** can create a GitHub pull request directly from the editor — no git knowledge needed.
+
+### How it works
+
+1. Click **Propose Changes** in edit mode (button appears when local edits exist).
+2. Enter the **propose password** (cached in localStorage, separate from the view password).
+3. Enter your **name** for attribution in the PR.
+4. The app encrypts the modified data in the browser, authenticates as a GitHub App, creates a branch, and opens a PR.
+5. The repo owner reviews and merges the PR.
+
+### Two-password access control
+
+| Password | Decrypts | Who gets it |
+|----------|----------|-------------|
+| View (A) | Family data, kinship rules, avatars | All family members |
+| Propose (B) | GitHub App credentials (`app.enc`) | Trusted editors only |
+
+View-only users can browse the tree and make local edits but cannot create PRs.
 
 ## Editor workflow
 

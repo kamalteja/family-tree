@@ -1,14 +1,15 @@
-import { loadData, renderChart, getChart, setFamilyData, getFamilyData } from './viewer.js';
+import { loadData, renderChart, getChart, setFamilyData, getFamilyData, normalizeData } from './viewer.js';
 import { initEditor } from './editor.js';
 import { computeDiff } from './diff.js';
 import { decryptFamilyData } from './crypto.js';
 import { confirmModal } from './ui.js';
+import { cacheGet, cacheSet, cacheRemove } from './storage.js';
 import './styles.css';
 
 const PASSWORD_KEY = 'family-tree-password';
 
 function initTheme() {
-  const saved = localStorage.getItem('family-tree-theme');
+  const saved = cacheGet('family-tree-theme');
   const theme = saved || 'light';
   document.documentElement.setAttribute('data-theme', theme);
   updateThemeIcon(theme);
@@ -17,7 +18,7 @@ function initTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('family-tree-theme', next);
+    cacheSet('family-tree-theme', next);
     updateThemeIcon(next);
   });
 }
@@ -32,7 +33,7 @@ function initResetButton() {
   document.getElementById('resetDataBtn').addEventListener('click', async () => {
     const ok = await confirmModal('Reset data', 'Reset to the original data? This will clear all localStorage edits.');
     if (!ok) return;
-    localStorage.removeItem('family-tree-data');
+    cacheRemove('family-tree-data');
     location.reload();
   });
 }
@@ -60,10 +61,10 @@ function initJsonEditor() {
         }
         const res = await fetch(import.meta.env.BASE_URL + `data/${name}.enc`);
         const encrypted = await res.text();
-        const password = localStorage.getItem(PASSWORD_KEY) || '';
+        const password = cacheGet(PASSWORD_KEY) || '';
         return JSON.parse(await decryptFamilyData(encrypted, password));
       }
-      const data = await fetchDataFile('family');
+      const data = normalizeData(await fetchDataFile('family'));
       baseJson = JSON.stringify(data, null, 2);
     } catch {
       baseJson = '[]';
@@ -95,9 +96,9 @@ function initJsonEditor() {
   }
 
   btn.addEventListener('click', () => {
-    const stored = localStorage.getItem('family-tree-data');
+    const stored = cacheGet('family-tree-data');
     let raw = stored || baseJson || '[]';
-    try { raw = JSON.stringify(JSON.parse(raw), null, 2); } catch { /* show as-is */ }
+    try { raw = JSON.stringify(normalizeData(JSON.parse(raw)), null, 2); } catch { /* show as-is */ }
     textarea.value = raw;
     errorEl.textContent = '';
     showingDiff = true;
@@ -139,7 +140,7 @@ function initJsonEditor() {
     try {
       const parsed = JSON.parse(source);
       if (!Array.isArray(parsed)) throw new Error('Data must be a JSON array');
-      localStorage.setItem('family-tree-data', JSON.stringify(parsed));
+      cacheSet('family-tree-data', JSON.stringify(parsed));
       modal.style.display = 'none';
       location.reload();
     } catch (err) {
@@ -180,9 +181,17 @@ function showApp() {
   document.documentElement.style.setProperty('--toolbar-height', toolbar.offsetHeight + 'px');
 }
 
+function initProposeProgressClose() {
+  document.getElementById('proposeProgressCloseBtn').addEventListener('click', () => {
+    document.getElementById('proposeProgressModal').style.display = 'none';
+  });
+}
+
 function lockApp() {
-  localStorage.removeItem(PASSWORD_KEY);
-  localStorage.removeItem('family-tree-data');
+  cacheRemove(PASSWORD_KEY);
+  cacheRemove('family-tree-data');
+  cacheRemove('family-tree-propose-pw');
+  cacheRemove('family-tree-proposed');
   setFamilyData([]);
   document.getElementById('FamilyChart').innerHTML = '';
   document.getElementById('app').style.display = 'none';
@@ -195,7 +204,7 @@ function lockApp() {
 
 function initLockButton() {
   document.getElementById('lockBtn').addEventListener('click', async () => {
-    if (localStorage.getItem('family-tree-data')) {
+    if (cacheGet('family-tree-data')) {
       const ok = await confirmModal('Lock with unsaved edits', 'You have local edits that haven\'t been exported. Locking will discard them. Continue?');
       if (!ok) return;
     }
@@ -205,7 +214,7 @@ function initLockButton() {
 
 async function tryUnlock(password) {
   await loadData(password);
-  localStorage.setItem(PASSWORD_KEY, password);
+  cacheSet(PASSWORD_KEY, password);
   showApp();
   renderChart();
   initEditor();
@@ -249,6 +258,7 @@ async function main() {
   initInfoModal();
   initLockButton();
   initPasswordModal();
+  initProposeProgressClose();
 
   if (import.meta.env.DEV) {
     try {
@@ -260,13 +270,13 @@ async function main() {
     } catch { /* family.json missing/invalid, fall through to password flow */ }
   }
 
-  const cached = localStorage.getItem(PASSWORD_KEY);
+  const cached = cacheGet(PASSWORD_KEY);
   if (cached) {
     try {
       await tryUnlock(cached);
       return;
     } catch {
-      localStorage.removeItem(PASSWORD_KEY);
+      cacheRemove(PASSWORD_KEY);
     }
   }
 

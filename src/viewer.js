@@ -2,6 +2,7 @@ import * as f3 from 'family-chart';
 import 'family-chart/styles/family-chart.css';
 import { computeAllRelationships } from './kinship.js';
 import { decryptFamilyData, decryptToBlob } from './crypto.js';
+import { cacheGet, cacheSet } from './storage.js';
 
 let chart = null;
 let familyData = [];
@@ -10,6 +11,17 @@ let relationshipLabels = new Map();
 let currentPrincipalId = null;
 const avatarUrlCache = new Map();
 let isFullTreeView = false;
+
+export function normalizeData(data) {
+  return data.map(p => ({
+    ...p,
+    rels: {
+      spouses: [...(p.rels?.spouses || [])].sort(),
+      parents: [...(p.rels?.parents || [])].sort(),
+      children: [...(p.rels?.children || [])].sort(),
+    },
+  })).sort((a, b) => a.id.localeCompare(b.id));
+}
 
 export function getFamilyData() {
   return familyData;
@@ -52,7 +64,7 @@ export async function loadData(password) {
   familyData = rawFamilyData;
   kinshipRules = rulesRes;
 
-  const saved = localStorage.getItem('family-tree-data');
+  const saved = cacheGet('family-tree-data');
   if (saved) {
     try {
       familyData = JSON.parse(saved);
@@ -63,7 +75,7 @@ export async function loadData(password) {
 
   await decryptAvatars(password);
 
-  const cachedPrincipal = localStorage.getItem('family-tree-principal');
+  const cachedPrincipal = cacheGet('family-tree-principal');
   if (cachedPrincipal && familyData.some(p => p.id === cachedPrincipal)) {
     currentPrincipalId = cachedPrincipal;
   } else {
@@ -90,7 +102,7 @@ async function decryptAvatars(password) {
   const avatarFiles = [...new Set(familyData.map(p => p.data.avatar).filter(Boolean))];
   if (avatarFiles.length === 0) return;
 
-  const pw = password || localStorage.getItem('family-tree-password') || '';
+  const pw = password || cacheGet('family-tree-password') || '';
 
   await Promise.all(avatarFiles.map(async (filename) => {
     if (avatarUrlCache.has(filename)) return;
@@ -203,7 +215,7 @@ function recomputeRelationships() {
 
 export function changePrincipal(newId) {
   currentPrincipalId = newId;
-  localStorage.setItem('family-tree-principal', newId);
+  cacheSet('family-tree-principal', newId);
   recomputeRelationships();
 
   const dropdown = document.getElementById('principalDropdown');

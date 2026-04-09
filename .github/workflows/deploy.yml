@@ -72,6 +72,8 @@ jobs:
 
       - run: npm ci --loglevel info
       - run: npm run build
+        env:
+          BASE_URL: /family-tree
 
       - uses: actions/upload-pages-artifact@v4
         if: github.ref == 'refs/heads/main'

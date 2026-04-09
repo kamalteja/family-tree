@@ -37,7 +37,7 @@
         </div>
       </div>
       <span id="memberCount" class="member-count"></span>
-      <h1 class="app-title">Family Tree</h1>
+      <h1 class="app-title">Family Tree<span id="appSubtitle" class="app-subtitle"></span></h1>
       <div class="toolbar-actions">
         <button id="searchBtn" class="btn btn-secondary" title="Search for a person (Ctrl+F)">&#128269;</button>
         <button id="fitViewBtn" class="btn btn-secondary" title="Center and fit tree to screen">&#8982;</button>
@@ -46,6 +46,10 @@
         <button id="viewModeBtn" class="btn btn-secondary" style="display:none;">Back to Viewer</button>
         <button id="exportBtn" class="btn btn-secondary" style="display:none;">Export JSON</button>
         <button id="proposeBtn" class="btn btn-primary" style="display:none;">Propose Changes</button>
+        <button id="kinshipBtn" class="btn btn-secondary" style="display:none;" title="Kinship Rules">Kinship</button>
+        <button id="kinshipEditBtn" class="btn btn-primary" style="display:none;">Edit</button>
+        <button id="kinshipViewBtn" class="btn btn-secondary" style="display:none;">Done Editing</button>
+        <button id="kinshipBackBtn" class="btn btn-secondary" style="display:none;">Back to Viewer</button>
         <button id="resetDataBtn" class="theme-toggle" title="Reset to original data">&#8635;</button>
         <button id="editJsonBtn" class="theme-toggle" title="Edit raw JSON data">{ }</button>
         <button id="lockBtn" class="theme-toggle" title="Lock and clear decrypted data">&#128274;</button>
@@ -182,6 +186,92 @@
       </div>
       <div id="qualityList"></div>
     </aside>
+
+    <div id="kinshipPanel" class="kinship-panel" style="display:none;">
+      <div class="kinship-body">
+        <div class="kinship-index">
+          <div class="kinship-index-header">
+            <span id="kinshipStateCount" class="kinship-count">States</span>
+            <input type="text" id="kinshipSearch" class="kinship-search" placeholder="Search states..." autocomplete="off" />
+            <button id="addStateBtn" class="btn btn-primary kinship-edit-only" style="display:none;">+ Add State</button>
+          </div>
+          <div id="kinshipStateList" class="kinship-state-list"></div>
+        </div>
+        <div class="kinship-main">
+          <svg id="kinshipSvg" class="kinship-svg"></svg>
+          <div id="kinshipEquiv" class="kinship-equiv"></div>
+          <div id="addTransitionWrap" class="kinship-add-transition kinship-edit-only" style="display:none;">
+            <button id="addTransitionBtn" class="btn btn-secondary">+ Add Transition</button>
+          </div>
+        </div>
+
+        <div id="stateEditPanel" class="kinship-side-panel" style="display:none;">
+          <h3 id="stateEditTitle">Edit State</h3>
+          <form id="stateEditForm">
+            <div class="form-group">
+              <label for="stateKeyInput">Key</label>
+              <input type="text" id="stateKeyInput" name="stateKey" required autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="stateTeInput">Telugu name</label>
+              <input type="text" id="stateTeInput" name="stateTe" required autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="stateEnInput">English name</label>
+              <input type="text" id="stateEnInput" name="stateEn" autocomplete="off" />
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" id="stateEditCancel" class="btn btn-secondary">Cancel</button>
+              <button type="button" id="stateDeleteBtn" class="btn btn-danger" style="display:none;">Delete</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="transitionEditPanel" class="kinship-side-panel" style="display:none;">
+          <h3 id="transitionPopTitle">Edit Transition</h3>
+          <form id="transitionEditForm">
+            <div class="form-group">
+              <label for="transFromInput">From</label>
+              <input type="text" id="transFromInput" name="transFrom" readonly />
+            </div>
+            <div class="form-group">
+              <label for="transToInput">To</label>
+              <select id="transToInput" name="transTo" required></select>
+            </div>
+            <div class="form-group">
+              <label for="transHopInput">Hop</label>
+              <select id="transHopInput" name="transHop" required>
+                <option value="parent">parent</option>
+                <option value="child">child</option>
+                <option value="spouse">spouse</option>
+                <option value="sibling">sibling</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="transGenderInput">Gender</label>
+              <select id="transGenderInput" name="transGender" required>
+                <option value="M">M</option>
+                <option value="F">F</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="transAgeInput">Age</label>
+              <select id="transAgeInput" name="transAge">
+                <option value="">null</option>
+                <option value="elder">elder</option>
+                <option value="younger">younger</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" id="transEditCancel" class="btn btn-secondary">Cancel</button>
+              <button type="button" id="transDeleteBtn" class="btn btn-danger" style="display:none;">Delete</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="confirmModal" class="confirm-modal" style="display:none;">

@@ -1,5 +1,6 @@
 import { loadData, renderChart, getChart, setFamilyData, getFamilyData, normalizeData } from './viewer.js';
 import { initEditor } from './editor.js';
+import { initKinshipViewer } from './kinship-viewer.js';
 import { computeDiff } from './diff.js';
 import { decryptFamilyData } from './crypto.js';
 import { confirmModal } from './ui.js';
@@ -34,6 +35,7 @@ function initResetButton() {
     const ok = await confirmModal('Reset data', 'Reset to the original data? This will clear all localStorage edits.');
     if (!ok) return;
     cacheRemove('family-tree-data');
+    cacheRemove('family-tree-kinship');
     location.reload();
   });
 }
@@ -190,6 +192,7 @@ function initProposeProgressClose() {
 function lockApp() {
   cacheRemove(PASSWORD_KEY);
   cacheRemove('family-tree-data');
+  cacheRemove('family-tree-kinship');
   cacheRemove('family-tree-propose-pw');
   cacheRemove('family-tree-proposed');
   setFamilyData([]);
@@ -204,7 +207,7 @@ function lockApp() {
 
 function initLockButton() {
   document.getElementById('lockBtn').addEventListener('click', async () => {
-    if (cacheGet('family-tree-data')) {
+    if (cacheGet('family-tree-data') || cacheGet('family-tree-kinship')) {
       const ok = await confirmModal('Lock with unsaved edits', 'You have local edits that haven\'t been exported. Locking will discard them. Continue?');
       if (!ok) return;
     }
@@ -218,6 +221,8 @@ async function tryUnlock(password) {
   showApp();
   renderChart();
   initEditor();
+  initKinshipViewer();
+  document.getElementById('kinshipBtn').style.display = 'inline-block';
 }
 
 function initPasswordModal() {
@@ -266,6 +271,8 @@ async function main() {
       showApp();
       renderChart();
       initEditor();
+      initKinshipViewer();
+      document.getElementById('kinshipBtn').style.display = 'inline-block';
       return;
     } catch { /* family.json missing/invalid, fall through to password flow */ }
   }

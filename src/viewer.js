@@ -35,6 +35,11 @@ export function getKinshipRules() {
   return kinshipRules;
 }
 
+export function setKinshipRules(rules) {
+  kinshipRules = rules;
+  recomputeRelationships();
+}
+
 export function getRelationshipLabels() {
   return relationshipLabels;
 }
@@ -72,9 +77,14 @@ export async function loadData(password) {
   if (saved) {
     try {
       familyData = JSON.parse(saved);
-    } catch {
-      // ignore malformed localStorage
-    }
+    } catch { /* ignore malformed localStorage */ }
+  }
+
+  const savedKinship = cacheGet('family-tree-kinship');
+  if (savedKinship) {
+    try {
+      kinshipRules = JSON.parse(savedKinship);
+    } catch { /* ignore malformed localStorage */ }
   }
 
   await decryptAvatars(password);

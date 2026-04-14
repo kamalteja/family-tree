@@ -11,6 +11,7 @@ describe('CACHE_POLICY', () => {
       'family-tree-proposer-name': { enabled: true },
       'family-tree-theme':         { enabled: true },
       'family-tree-principal':     { enabled: true },
+      'family-tree-kinship':       { enabled: true, store: 'local' },
     });
   });
 

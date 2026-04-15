@@ -1,7 +1,11 @@
-import { getFamilyData, setFamilyData, refreshViewer, normalizeData, getRelationshipLabels } from './viewer.js';
+import { getFamilyData, setFamilyData, refreshViewer, normalizeData, getRelationshipLabels, getAvatarUrl, setAvatarUrl, removeAvatarUrl } from './viewer.js';
 import { confirmModal, showToast } from './ui.js';
 import { proposeChanges } from './propose.js';
 import { cacheGet, cacheSet, cacheRemove } from './storage.js';
+import { saveAvatar, getAvatar, removeAvatar as removeAvatarIDB } from './avatar-store.js';
+
+const MAX_AVATAR_SIZE = 1 * 1024 * 1024;
+const ALLOWED_AVATAR_TYPES = ['image/png', 'image/jpeg'];
 
 let editingPersonId = null;
 
@@ -18,6 +22,9 @@ export function initEditor() {
   document.getElementById('closeQualityBtn').addEventListener('click', () => {
     document.getElementById('qualityPanel').style.display = 'none';
   });
+
+  document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
+  document.getElementById('removeAvatarBtn').addEventListener('click', handleAvatarRemove);
 
   document.addEventListener('principal-changed', () => {
     if (document.getElementById('editorPanel').style.display === 'block') {
@@ -38,7 +45,7 @@ function enterEditMode() {
   document.getElementById('editModeBtn').style.display = 'none';
   document.getElementById('viewModeBtn').style.display = 'inline-block';
   document.getElementById('exportBtn').style.display = 'inline-block';
-  document.getElementById('proposeBtn').style.display = cacheGet('family-tree-data') && !cacheGet('family-tree-proposed') ? 'inline-block' : 'none';
+  document.getElementById('proposeBtn').style.display = (cacheGet('family-tree-data') || cacheGet('family-tree-kinship')) && !cacheGet('family-tree-proposed') ? 'inline-block' : 'none';
   document.getElementById('toggleViewBtn').style.display = 'none';
   renderPersonList();
 }
@@ -83,6 +90,7 @@ function showAddForm() {
   document.getElementById('personList').style.display = 'none';
   document.getElementById('deletePersonBtn').style.display = 'none';
   clearForm();
+  renderAvatarPreview(null);
   populateRelationshipSelects();
   document.getElementById('editorPanel').scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -105,6 +113,7 @@ function showEditForm(personId) {
   document.getElementById('gender').value = person.data.gender || 'M';
   document.getElementById('birthday').value = person.data.birthday || '';
 
+  renderAvatarPreview(person.data.avatar || null, person.data.gender);
   populateRelationshipSelects();
 
   (person.rels.parents || []).forEach(pid => {
@@ -174,12 +183,83 @@ function hideForm() {
   clearForm();
 }
 
+function renderAvatarPreview(avatarFilename, gender) {
+  const preview = document.getElementById('avatarPreview');
+  const removeBtn = document.getElementById('removeAvatarBtn');
+  const src = avatarFilename ? getAvatarUrl(avatarFilename) : null;
+
+  if (src) {
+    preview.innerHTML = `<img src="${src}" alt="Avatar" />`;
+    removeBtn.style.display = 'inline-block';
+  } else {
+    const color = gender === 'F' ? 'rgb(196, 138, 146)' : 'rgb(120, 159, 172)';
+    preview.innerHTML = `<svg viewBox="0 0 64 64"><circle cx="32" cy="24" r="14" fill="${color}"/><ellipse cx="32" cy="56" rx="22" ry="16" fill="${color}"/></svg>`;
+    removeBtn.style.display = 'none';
+  }
+}
+
+async function handleAvatarUpload(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    showToast('Only PNG and JPG files are allowed', 'error');
+    e.target.value = '';
+    return;
+  }
+  if (file.size > MAX_AVATAR_SIZE) {
+    showToast('File must be under 1 MB', 'error');
+    e.target.value = '';
+    return;
+  }
+
+  const ext = file.type === 'image/png' ? 'png' : 'jpg';
+  const personId = editingPersonId || document.getElementById('personId').value || '_new';
+  const filename = `${personId}.${ext}`;
+
+  const buffer = await file.arrayBuffer();
+  await saveAvatar(filename, buffer);
+
+  const blobUrl = URL.createObjectURL(new Blob([buffer], { type: file.type }));
+  setAvatarUrl(filename, blobUrl);
+
+  const data = getFamilyData();
+  if (editingPersonId) {
+    const person = data.find(p => p.id === editingPersonId);
+    if (person) {
+      const oldAvatar = person.data.avatar;
+      if (oldAvatar && oldAvatar !== filename) {
+        await removeAvatarIDB(oldAvatar);
+        removeAvatarUrl(oldAvatar);
+      }
+      person.data.avatar = filename;
+    }
+  }
+
+  renderAvatarPreview(filename);
+  e.target.value = '';
+}
+
+async function handleAvatarRemove() {
+  const data = getFamilyData();
+  if (!editingPersonId) return;
+  const person = data.find(p => p.id === editingPersonId);
+  if (!person || !person.data.avatar) return;
+
+  const filename = person.data.avatar;
+  await removeAvatarIDB(filename);
+  removeAvatarUrl(filename);
+  person.data.avatar = '';
+  renderAvatarPreview(null, person.data.gender);
+}
+
 function clearForm() {
   document.getElementById('personId').value = '';
   document.getElementById('firstName').value = '';
   document.getElementById('lastName').value = '';
   document.getElementById('gender').value = 'M';
   document.getElementById('birthday').value = '';
+  document.getElementById('avatarInput').value = '';
   for (const id of ['parentPicker', 'spousePicker', 'childrenPicker']) {
     const picker = document.getElementById(id);
     picker.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
@@ -211,7 +291,7 @@ function restoreCheckedRels() {
   });
 }
 
-function handleSave(e) {
+async function handleSave(e) {
   e.preventDefault();
   const data = getFamilyData();
 
@@ -243,9 +323,26 @@ function handleSave(e) {
     syncBidirectionalRels(data, editingPersonId, oldParents, selectedParents, oldSpouses, selectedSpouses, oldChildren, selectedChildren);
   } else {
     const newId = generateId(firstName, lastName);
+    let avatar = '';
+
+    const tempAvatar = getAvatarUrl('_new.png') ? '_new.png' : getAvatarUrl('_new.jpg') ? '_new.jpg' : null;
+    if (tempAvatar) {
+      const ext = tempAvatar.split('.').pop();
+      const finalName = `${newId}.${ext}`;
+      const buf = await getAvatar(tempAvatar);
+      if (buf) {
+        await saveAvatar(finalName, buf);
+        await removeAvatarIDB(tempAvatar);
+        const blobUrl = getAvatarUrl(tempAvatar);
+        removeAvatarUrl(tempAvatar);
+        if (blobUrl) setAvatarUrl(finalName, blobUrl);
+        avatar = finalName;
+      }
+    }
+
     const newPerson = {
       id: newId,
-      data: { 'first name': firstName, 'last name': lastName, gender, birthday, avatar: '' },
+      data: { 'first name': firstName, 'last name': lastName, gender, birthday, avatar },
       rels: { parents: selectedParents, spouses: selectedSpouses, children: selectedChildren },
     };
     data.push(newPerson);

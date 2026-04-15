@@ -3,6 +3,7 @@ import 'family-chart/styles/family-chart.css';
 import { computeAllRelationships } from './kinship.js';
 import { decryptFamilyData, decryptToBlob } from './crypto.js';
 import { cacheGet, cacheSet } from './storage.js';
+import { getAllAvatars } from './avatar-store.js';
 
 let chart = null;
 let familyData = [];
@@ -11,6 +12,18 @@ let relationshipLabels = new Map();
 let currentPrincipalId = null;
 const avatarUrlCache = new Map();
 let isFullTreeView = false;
+
+export function getAvatarUrl(filename) {
+  return avatarUrlCache.get(filename) || null;
+}
+
+export function setAvatarUrl(filename, url) {
+  avatarUrlCache.set(filename, url);
+}
+
+export function removeAvatarUrl(filename) {
+  avatarUrlCache.delete(filename);
+}
 
 export function normalizeData(data) {
   return data.map(p => ({
@@ -118,8 +131,25 @@ async function decryptAvatars(password) {
 
   const pw = password || cacheGet('family-tree-password') || '';
 
+  let localAvatars = new Map();
+  try {
+    const entries = await getAllAvatars();
+    for (const { filename, data } of entries) {
+      localAvatars.set(filename, data);
+    }
+  } catch { /* IndexedDB unavailable */ }
+
   await Promise.all(avatarFiles.map(async (filename) => {
     if (avatarUrlCache.has(filename)) return;
+
+    if (localAvatars.has(filename)) {
+      const buf = localAvatars.get(filename);
+      const ext = filename.split('.').pop().toLowerCase();
+      const mime = MIME_TYPES[ext] || 'application/octet-stream';
+      avatarUrlCache.set(filename, URL.createObjectURL(new Blob([buf], { type: mime })));
+      return;
+    }
+
     const ext = filename.split('.').pop().toLowerCase();
     const mime = MIME_TYPES[ext] || 'application/octet-stream';
     try {

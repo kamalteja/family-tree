@@ -5,6 +5,7 @@ import { computeDiff } from './diff.js';
 import { decryptFamilyData } from './crypto.js';
 import { confirmModal } from './ui.js';
 import { cacheGet, cacheSet, cacheRemove } from './storage.js';
+import { clearAvatars, initAvatarStore } from './avatar-store.js';
 import './styles.css';
 
 const PASSWORD_KEY = 'family-tree-password';
@@ -36,6 +37,7 @@ function initResetButton() {
     if (!ok) return;
     cacheRemove('family-tree-data');
     cacheRemove('family-tree-kinship');
+    await clearAvatars().catch(() => {});
     location.reload();
   });
 }
@@ -195,6 +197,7 @@ function lockApp() {
   cacheRemove('family-tree-kinship');
   cacheRemove('family-tree-propose-pw');
   cacheRemove('family-tree-proposed');
+  clearAvatars().catch(() => {});
   setFamilyData([]);
   document.getElementById('FamilyChart').innerHTML = '';
   document.getElementById('app').style.display = 'none';
@@ -258,6 +261,7 @@ async function main() {
   if (homeLink) homeLink.href = import.meta.env.BASE_URL;
 
   initTheme();
+  initAvatarStore().catch(() => {});
   initResetButton();
   initJsonEditor();
   initInfoModal();

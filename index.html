@@ -130,6 +130,18 @@
       </div>
       <form id="personForm" style="display:none;">
         <input type="hidden" id="personId" />
+        <div class="form-group avatar-upload">
+          <label>Avatar</label>
+          <div class="avatar-upload-row">
+            <div id="avatarPreview" class="avatar-preview"></div>
+            <div class="avatar-upload-actions">
+              <label class="btn btn-small btn-secondary avatar-upload-btn" for="avatarInput">Upload</label>
+              <input type="file" id="avatarInput" accept=".png,.jpg,.jpeg" hidden />
+              <button type="button" id="removeAvatarBtn" class="btn btn-small btn-danger" style="display:none;">Remove</button>
+              <span class="avatar-hint">PNG or JPG, max 1 MB</span>
+            </div>
+          </div>
+        </div>
         <div class="form-group">
           <label for="firstName">First Name</label>
           <input type="text" id="firstName" required />
@@ -306,6 +318,17 @@
       <div class="confirm-actions">
         <button id="proposeNameSubmit" class="btn btn-primary">Propose</button>
         <button id="proposeNameCancel" class="btn btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="proposeReviewModal" class="confirm-modal" style="display:none;">
+    <div class="confirm-modal-content propose-review-content">
+      <h3>Review Changes</h3>
+      <div id="proposeReviewBody" class="propose-review-body"></div>
+      <div class="confirm-actions">
+        <button id="proposeReviewCancel" class="btn btn-secondary">Cancel</button>
+        <button id="proposeReviewConfirm" class="btn btn-primary">Propose</button>
       </div>
     </div>
   </div>

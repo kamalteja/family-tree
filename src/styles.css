@@ -353,6 +353,21 @@ body {
   transform: scale(0.97);
 }
 
+.btn-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
 .btn-primary {
   background: var(--primary);
   color: #fff;
@@ -659,7 +674,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .editor-header h2 {
@@ -670,11 +685,20 @@ body {
 .editor-header-actions {
   display: flex;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .editor-header-actions .btn {
   flex: 1;
+}
+
+.editor-sticky {
+  position: sticky;
+  top: -16px;
+  z-index: 2;
+  background: var(--surface);
+  margin: -16px -16px 0;
+  padding: 16px 16px 0;
 }
 
 /* ---- Quality Panel ---- */
@@ -836,6 +860,25 @@ body {
 
 
 /* ---- Person List ---- */
+
+.person-list-search {
+  padding: 8px 0;
+}
+
+.person-list-search input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+
+.person-list-search input:focus {
+  border-color: var(--primary);
+}
 
 .person-list-item {
   display: flex;
@@ -1197,7 +1240,7 @@ body {
 }
 
 .card-highlight {
-  animation: card-pulse 0.6s ease-out 3;
+  animation: card-pulse 1s ease-in-out infinite;
 }
 
 /* ---- Propose Modal inputs ---- */

@@ -26,6 +26,23 @@ export function initEditor() {
   document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
   document.getElementById('removeAvatarBtn').addEventListener('click', handleAvatarRemove);
 
+  document.getElementById('personListSearch').addEventListener('input', () => renderPersonList());
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+      const editorPanel = document.getElementById('editorPanel');
+      if (editorPanel.style.display === 'block') {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const searchInput = document.getElementById('personListSearch');
+        if (searchInput && searchInput.offsetParent !== null) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+    }
+  }, true);
+
   document.addEventListener('principal-changed', () => {
     if (document.getElementById('editorPanel').style.display === 'block') {
       renderPersonList();
@@ -66,13 +83,22 @@ function exitEditMode() {
 function renderPersonList() {
   const list = document.getElementById('personList');
   const data = getFamilyData();
-  list.innerHTML = '<h3>All Family Members</h3>';
+  const searchInput = document.getElementById('personListSearch');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  const itemsContainer = list.querySelector('.person-list-items');
+  if (itemsContainer) itemsContainer.remove();
+
+  const container = document.createElement('div');
+  container.className = 'person-list-items';
 
   const labels = getRelationshipLabels();
   data.forEach(person => {
+    const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
+    if (query && !name.toLowerCase().includes(query)) return;
+
     const item = document.createElement('div');
     item.className = 'person-list-item';
-    const name = (person.data['first name'] || '') + (person.data['last name'] ? ' ' + person.data['last name'] : '');
     const rel = labels.get(person.id);
     const relHtml = rel ? ` <span class="person-list-rel">(${rel.te})</span>` : '';
     item.innerHTML = `
@@ -80,14 +106,17 @@ function renderPersonList() {
       <button class="btn btn-small btn-secondary" data-id="${person.id}">Edit</button>
     `;
     item.querySelector('button').addEventListener('click', () => showEditForm(person.id));
-    list.appendChild(item);
+    container.appendChild(item);
   });
+
+  list.appendChild(container);
 }
 
 function showAddForm() {
   editingPersonId = null;
   document.getElementById('personForm').style.display = 'block';
   document.getElementById('personList').style.display = 'none';
+  document.querySelector('.editor-sticky').style.display = 'none';
   document.getElementById('deletePersonBtn').style.display = 'none';
   clearForm();
   renderAvatarPreview(null);
@@ -104,6 +133,7 @@ function showEditForm(personId) {
   const form = document.getElementById('personForm');
   form.style.display = 'block';
   document.getElementById('personList').style.display = 'none';
+  document.querySelector('.editor-sticky').style.display = 'none';
   document.getElementById('deletePersonBtn').style.display = 'inline-block';
   document.getElementById('editorPanel').scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -179,6 +209,7 @@ function populateRelationshipSelects() {
 function hideForm() {
   document.getElementById('personForm').style.display = 'none';
   document.getElementById('personList').style.display = '';
+  document.querySelector('.editor-sticky').style.display = '';
   editingPersonId = null;
   clearForm();
 }
@@ -494,7 +525,7 @@ function exportJson() {
   };
 }
 
-const ALL_FIELDS = ['first name', 'last name', 'gender', 'birthday'];
+const ALL_FIELDS = ['first name', 'last name', 'gender', 'birthday', 'avatar'];
 
 function scanMissingAttributes() {
   const data = getFamilyData();

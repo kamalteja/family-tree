@@ -715,14 +715,29 @@ function smoothPanTo(card) {
   requestAnimationFrame(frame);
 }
 
+let highlightCleanup = null;
+
 function highlightCard(personId) {
+  if (highlightCleanup) highlightCleanup();
+
   const container = document.getElementById('FamilyChart');
   const card = container.querySelector(`.card-inner[data-person-id="${personId}"]`);
   if (!card) return;
+
   card.classList.remove('card-highlight');
   void card.offsetWidth;
   card.classList.add('card-highlight');
-  card.addEventListener('animationend', () => card.classList.remove('card-highlight'), { once: true });
+
+  function stop() {
+    card.classList.remove('card-highlight');
+    card.removeEventListener('mouseenter', stop);
+    clearTimeout(timer);
+    highlightCleanup = null;
+  }
+
+  card.addEventListener('mouseenter', stop);
+  const timer = setTimeout(stop, 60_000);
+  highlightCleanup = stop;
 }
 
 export function refreshViewer() {

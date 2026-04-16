@@ -238,7 +238,7 @@ function initPasswordModal() {
     const password = input.value;
     if (!password) { errorEl.textContent = 'Please enter a password.'; return; }
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Decrypting…';
+    submitBtn.innerHTML = '<span class="btn-spinner"></span>';
     errorEl.textContent = '';
     try {
       await tryUnlock(password);
@@ -249,6 +249,7 @@ function initPasswordModal() {
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Unlock';
+      submitBtn.classList.remove('btn-loading');
     }
   }
 
